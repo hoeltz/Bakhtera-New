@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Vendor Data Test</title>
+</head>
+<body>
+    <h1>Vendor Data Debug</h1>
+    <button onclick="clearData()">Clear All Bridge Data</button>
+    <button onclick="showData()">Show Stored Data</button>
+    <button onclick="seedData()">Seed Sample Data</button>
+    <pre id="output"></pre>
+
+    <script>
+        function clearData() {
+            localStorage.removeItem('bridgeVendorData');
+            localStorage.removeItem('bridgeCustomerData');
+            localStorage.removeItem('bridge_inventory');
+            localStorage.removeItem('bridge_quotations');
+            localStorage.removeItem('bridge_invoices');
+            localStorage.removeItem('bridge_sales_orders');
+            document.getElementById('output').textContent = '✓ All BRIDGE data cleared from localStorage';
+            console.log('✓ Cleared all BRIDGE data');
+        }
+
+        function showData() {
+            const vendorData = localStorage.getItem('bridgeVendorData');
+            const customerData = localStorage.getItem('bridgeCustomerData');
+            const inventoryData = localStorage.getItem('bridge_inventory');
+            
+            const output = `
+VENDOR DATA: ${vendorData ? 'EXISTS (' + JSON.parse(vendorData).length + ' vendors)' : 'EMPTY'}
+CUSTOMER DATA: ${customerData ? 'EXISTS (' + JSON.parse(customerData).length + ' customers)' : 'EMPTY'}
+INVENTORY DATA: ${inventoryData ? 'EXISTS (' + JSON.parse(inventoryData).length + ' items)' : 'EMPTY'}
+
+Vendor Sample:
+${vendorData ? JSON.stringify(JSON.parse(vendorData)[0], null, 2).substring(0, 300) : 'No vendor data'}
+            `;
+            document.getElementById('output').textContent = output;
+            console.log(output);
+        }
+
+        function seedData() {
+            const vendors = [
+                { id: 'VEND-001', companyName: 'Maju Shipping Line', vendorId: 'BRIV24000001', status: 'Active' },
+                { id: 'VEND-002', companyName: 'Garuda Air Cargo', vendorId: 'BRIV24000002', status: 'Active' }
+            ];
+            localStorage.setItem('bridgeVendorData', JSON.stringify(vendors));
+            document.getElementById('output').textContent = '✓ Seeded ' + vendors.length + ' sample vendors';
+            console.log('✓ Seeded vendors:', vendors);
+        }
+
+        // Auto show on load
+        window.onload = () => showData();
+    </script>
+</body>
+</html>

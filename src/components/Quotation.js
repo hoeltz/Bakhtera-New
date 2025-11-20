@@ -39,6 +39,11 @@ import {
   FormControlLabel,
   FormLabel,
   Switch,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  LinearProgress,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -76,6 +81,66 @@ import {
   INDONESIAN_CAPITALS_LIST,
   INTERNATIONAL_COUNTRIES_LIST,
 } from '../data/locationData';
+import { sampleQuotations, initializeSampleQuotationData } from '../data/sampleQuotationData';
+
+// Enhanced data for freight forwarding
+const freightServiceTypes = [
+  'Sea Freight',
+  'Air Freight',
+  'Trucking',
+  'Rail Freight',
+  'Express Courier',
+  'Door to Door',
+  'Warehousing',
+  'Customs Clearance',
+  'Consolidation'
+];
+
+const containerTypes = [
+  '20ft Standard',
+  '40ft Standard',
+  '40ft High Cube',
+  '45ft High Cube',
+  'LCL (Less than Container Load)',
+  'FCL (Full Container Load)',
+  'Open Top',
+  'Flat Rack'
+];
+
+const bcCodes = [
+  { code: 'BC 2.3', description: 'Peng impor barang untuk dirakit/dipasang di dalam negeri' },
+  { code: 'BC 2.5', description: 'Peng impor barang contoh untuk perkembangan industry' },
+  { code: 'BC 2.7', description: 'Peng impor sementara' },
+  { code: 'BC 3.0', description: 'Peng ekspor barang' },
+  { code: 'BC 2.3.1', description: 'BC 2.3 dengan financial assistance' },
+  { code: 'BC 2.5.1', description: 'BC 2.5 untuk grace period' }
+];
+
+// Initialize enhanced consignment fees structure
+const initializeConsignmentFees = () => ({
+  // Base Fees
+  baseFreight: 0,
+  documentation: 0,
+  handling: 0,
+  // Additional Services
+  insurance: 0,
+  customsClearance: 0,
+  warehousing: 0,
+  delivery: 0,
+  // Operational Fees
+  fuelSurcharge: 0,
+  securityFee: 0,
+  equipmentFee: 0,
+  // Special Services
+  temperatureControlled: 0,
+  hazardousCargo: 0,
+  expressService: 0,
+  // Total Calculation
+  subtotal: 0,
+  taxRate: 11,
+  taxAmount: 0,
+  total: 0
+});
 import {
   handleError,
   showSuccessToast,
@@ -97,8 +162,6 @@ import {
 
 
 // Import optimized components and hooks
-import ErrorBoundary, { FormErrorBoundary } from './ErrorBoundary';
-
 
 /**
  * Custom hook for Quotation form management
@@ -160,6 +223,95 @@ const useQuotationForm = (initialValues = {}, validationRules = {}) => {
     includeStandardTerms: true,
     // Cargo items array - updated structure
     cargoItems: [],
+    // Enhanced Freight Forwarding Features from SalesOrder
+    consignments: [],
+    
+    // Freight Details
+    awbNumber: '',
+    blNumber: '',
+    vesselName: '',
+    voyageNumber: '',
+    portLoading: '',
+    portDischarge: '',
+    
+    // Cargo Details (Enhanced from SalesOrder)
+    cargoItems: [
+      {
+        id: `cargo_${Date.now()}`,
+        description: '',
+        hsCode: '',
+        quantity: 1,
+        unit: 'PCS',
+        weight: 0,
+        weightUnit: 'KG',
+        dimensions: {
+          length: 0,
+          width: 0,
+          height: 0,
+          unit: 'CM'
+        },
+        volume: 0,
+        volumeUnit: 'M3',
+        packingType: '',
+        containerType: '',
+        containerNumber: '',
+        sealNumber: '',
+        value: 0,
+        currency: 'IDR'
+      }
+    ],
+    
+    // Customs & Documentation
+    bcCode: '',
+    bcDescription: '',
+    importLicense: '',
+    exportLicense: '',
+    certificateOrigin: '',
+    
+    // Documentation Management
+    documents: [
+      {
+        id: `doc_${Date.now()}`,
+        name: '',
+        type: '',
+        status: 'pending',
+        uploadDate: null,
+        expiryDate: null,
+        required: true,
+        uploadedBy: '',
+        notes: ''
+      }
+    ],
+    
+    // Customs Workflow
+    customsWorkflow: {
+      currentStep: 'preparation',
+      steps: [
+        { id: 'preparation', name: 'Document Preparation', completed: false, date: null },
+        { id: 'submission', name: 'BC Submission', completed: false, date: null },
+        { id: 'verification', name: 'Customs Verification', completed: false, date: null },
+        { id: 'clearance', name: 'Customs Clearance', completed: false, date: null },
+        { id: 'release', name: 'Cargo Release', completed: false, date: null }
+      ],
+      customsOfficer: '',
+      remarks: '',
+      estimatedProcessingTime: ''
+    },
+    
+    // Consignment Fee Structure
+    consignmentFees: initializeConsignmentFees(),
+    
+    // Owner Information
+    consignor: '',
+    consignee: '',
+    notifyParty: '',
+    
+    // Additional Information
+    specialInstructions: '',
+    marksAndNumbers: '',
+    hazardous: false,
+    temperature: '',
+    
     // Status tracking
     status: 'Draft',
     quotationNumber: '',
@@ -219,73 +371,55 @@ const useQuotationForm = (initialValues = {}, validationRules = {}) => {
     }
   }, [generateQuotationNumber, values.quotationNumber]);
 
-  // Cargo items management functions
+  // Enhanced Cargo items management functions (from SalesOrder)
   const addCargoItem = useCallback(() => {
     const newItem = {
-      id: Date.now().toString(),
+      id: `cargo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       description: '',
-      weight: 0,
-      volume: 0,
-      value: 0,
-      currency: 'IDR',
       hsCode: '',
-      hsCodeDescription: '',
-      importDuty: 0,
-      vat: 11,
-      excise: 0,
-
-      // Origin costs
-      pickupCharge: 0,
-      pickupChargeUSD: 0,
-      exportDocumentationFee: 0,
-      exportDocumentationFeeUSD: 0,
-      originTHC: 0,
-      originTHCUSD: 0,
-      vgmFee: 0,
-      vgmFeeUSD: 0,
-
-      // Freight costs
-      basicFreight: 0,
-      basicFreightUSD: 0,
-      bunkerSurcharge: 0,
-      bunkerSurchargeUSD: 0,
-      securitySurcharge: 0,
-      securitySurchargeUSD: 0,
-      warRiskSurcharge: 0,
-      warRiskSurchargeUSD: 0,
-
-      // Destination costs
-      importDocumentationFee: 0,
-      importDocumentationFeeUSD: 0,
-      destinationTHC: 0,
-      destinationTHCUSD: 0,
-      deliveryCharge: 0,
-      deliveryChargeUSD: 0,
-
-      // Additional costs
-      storageFee: 0,
-      storageFeeUSD: 0,
-      detentionFee: 0,
-      detentionFeeUSD: 0,
-      specialHandlingFee: 0,
-      specialHandlingFeeUSD: 0,
-
-      // Insurance
-      insuranceCost: 0,
-      insuranceCostUSD: 0,
-
-      // Container details
-      containerType: '20DC',
+      quantity: 1,
+      unit: 'PCS',
+      weight: 0,
+      weightUnit: 'KG',
+      dimensions: {
+        length: 0,
+        width: 0,
+        height: 0,
+        unit: 'CM'
+      },
+      volume: 0,
+      volumeUnit: 'M3',
+      packingType: '',
+      containerType: '',
       containerNumber: '',
       sealNumber: '',
-
-      // Regulatory
+      value: 0,
+      currency: 'IDR',
+      
+      // Enhanced cost fields from SalesOrder
+      basicFreight: 0,
+      bunkerSurcharge: 0,
+      pickupCharge: 0,
+      exportDocumentationFee: 0,
+      originTHC: 0,
+      importDocumentationFee: 0,
+      destinationTHC: 0,
+      insuranceCost: 0,
+      
+      // Additional cost fields
+      vgmFee: 0,
+      securitySurcharge: 0,
+      warRiskSurcharge: 0,
+      deliveryCharge: 0,
+      storageFee: 0,
+      detentionFee: 0,
+      specialHandlingFee: 0,
+      
+      // Additional fields
+      hazardous: false,
       certificateRequired: false,
       inspectionRequired: false,
       quarantineRequired: false,
-
-      // Other
-      hazardous: false,
       createdAt: new Date().toISOString()
     };
 
@@ -308,6 +442,72 @@ const useQuotationForm = (initialValues = {}, validationRules = {}) => {
     setValues(prev => ({
       ...prev,
       cargoItems: (prev.cargoItems || []).filter(item => item.id !== itemId)
+    }));
+  }, [setValues]);
+
+  // Document management functions (from SalesOrder)
+  const addDocument = useCallback(() => {
+    const newDocument = {
+      id: `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      name: '',
+      type: '',
+      status: 'pending',
+      uploadDate: null,
+      expiryDate: null,
+      required: true,
+      uploadedBy: '',
+      notes: ''
+    };
+    
+    setValues(prev => ({
+      ...prev,
+      documents: [...(prev.documents || []), newDocument]
+    }));
+  }, [setValues]);
+
+  const updateDocument = useCallback((docId, field, value) => {
+    setValues(prev => ({
+      ...prev,
+      documents: (prev.documents || []).map(doc =>
+        doc.id === docId ? { ...doc, [field]: value } : doc
+      )
+    }));
+  }, [setValues]);
+
+  const removeDocument = useCallback((docId) => {
+    setValues(prev => ({
+      ...prev,
+      documents: (prev.documents || []).filter(doc => doc.id !== docId)
+    }));
+  }, [setValues]);
+
+  // Customs workflow functions (from SalesOrder)
+  const updateCustomsStep = useCallback((stepId, completed) => {
+    setValues(prev => ({
+      ...prev,
+      customsWorkflow: {
+        ...prev.customsWorkflow,
+        steps: prev.customsWorkflow.steps.map(step =>
+          step.id === stepId ? { ...step, completed, date: completed ? new Date().toISOString() : null } : step
+        )
+      }
+    }));
+  }, [setValues]);
+
+  const getCustomsWorkflowProgress = useCallback(() => {
+    const completedSteps = values.customsWorkflow.steps.filter(step => step.completed).length;
+    return (completedSteps / values.customsWorkflow.steps.length) * 100;
+  }, [values.customsWorkflow]);
+
+  // Consignment fee management functions (from SalesOrder)
+  const updateConsignmentFee = useCallback((feeType, value) => {
+    setValues(prev => ({
+      ...prev,
+      consignmentFees: {
+        ...initializeConsignmentFees(),
+        ...prev.consignmentFees,
+        [feeType]: value || 0
+      }
     }));
   }, [setValues]);
 
@@ -498,6 +698,15 @@ const useQuotationForm = (initialValues = {}, validationRules = {}) => {
     // 4. Enhanced tax base calculation (cargo value + freight costs + additional costs)
     const freightAndAdditionalCosts = cargoCosts.totalFreightCosts + cargoCosts.totalAdditionalCosts;
     const enhancedTaxBaseValue = cargoValueForTax + freightAndAdditionalCosts;
+
+    // Enhanced Consignment Fees Calculation (from SalesOrder)
+    const consignmentFees = values.consignmentFees || {};
+    const consignmentSubtotal = Object.keys(consignmentFees)
+      .filter(key => key !== 'subtotal' && key !== 'taxRate' && key !== 'taxAmount' && key !== 'total')
+      .reduce((sum, key) => sum + (consignmentFees[key] || 0), 0);
+    
+    const consignmentTaxAmount = consignmentSubtotal * ((consignmentFees.taxRate || 11) / 100);
+    const consignmentTotal = consignmentSubtotal + consignmentTaxAmount;
 
     // 5. Comprehensive tax calculation
     const importDuty = (enhancedTaxBaseValue || 0) * ((values.importDuty || 0) / 100);
@@ -753,6 +962,18 @@ const useQuotationForm = (initialValues = {}, validationRules = {}) => {
     addOtherCost,
     updateOtherCost,
     removeOtherCost,
+
+    // Document management (from SalesOrder)
+    addDocument,
+    updateDocument,
+    removeDocument,
+
+    // Customs workflow management (from SalesOrder)
+    updateCustomsStep,
+    getCustomsWorkflowProgress,
+
+    // Consignment fee management (from SalesOrder)
+    updateConsignmentFee,
 
     // Actions
     handleSubmit,
@@ -1081,7 +1302,7 @@ const RouteServiceTab = memo(({
 RouteServiceTab.displayName = 'RouteServiceTab';
 
 /**
- * Enhanced Cargo Details Tab Component with Comprehensive Cost Fields
+ * Enhanced Cargo Details Tab Component with Comprehensive Cost Fields (from SalesOrder)
  */
 const CargoDetailsTab = memo(({
   values,
@@ -1097,17 +1318,16 @@ const CargoDetailsTab = memo(({
   onRemoveItem,
   hsCodes
 }) => {
-  // Container type options
+  // Container type options (from SalesOrder)
   const containerTypes = [
-    { value: '20DC', label: '20\' Dry Container' },
-    { value: '40DC', label: '40\' Dry Container' },
-    { value: '40HC', label: '40\' High Cube' },
-    { value: '20RF', label: '20\' Reefer' },
-    { value: '40RF', label: '40\' Reefer' },
-    { value: '20OT', label: '20\' Open Top' },
-    { value: '40OT', label: '40\' Open Top' },
-    { value: '20FR', label: '20\' Flat Rack' },
-    { value: '40FR', label: '40\' Flat Rack' }
+    '20ft Standard',
+    '40ft Standard',
+    '40ft High Cube',
+    '45ft High Cube',
+    'LCL (Less than Container Load)',
+    'FCL (Full Container Load)',
+    'Open Top',
+    'Flat Rack'
   ];
 
   return (
@@ -2215,6 +2435,545 @@ const TermsConditionsTab = memo(({
 TermsConditionsTab.displayName = 'TermsConditionsTab';
 
 /**
+ * Documentation Management Tab Component (from SalesOrder)
+ */
+const DocumentationManagementTab = memo(({
+  values,
+  fieldStates,
+  getFieldProps,
+  getFieldStateColor,
+  getFieldStateIcon,
+  FIELD_STATES,
+  handleFieldChange,
+  documents,
+  onAddDocument,
+  onUpdateDocument,
+  onRemoveDocument
+}) => {
+  const documentTypes = [
+    'Invoice',
+    'Packing List',
+    'Bill of Lading (B/L)',
+    'Airway Bill (AWB)',
+    'Certificate of Origin',
+    'Commercial Invoice',
+    'Proforma Invoice',
+    'Import Declaration (BC)',
+    'Export Declaration (BC)',
+    'Insurance Certificate',
+    'Inspection Certificate',
+    'Phytosanitary Certificate',
+    'Health Certificate',
+    'Customs Declaration',
+    'Import Permit',
+    'Export Permit',
+    'Other'
+  ];
+
+  return (
+    <Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+        <Typography variant="h6">Document Management</Typography>
+        <Button startIcon={<AddIcon />} onClick={onAddDocument}>
+          Add Document
+        </Button>
+      </Box>
+
+      {documents.map((doc, index) => (
+        <Card key={doc.id} sx={{ mb: 2 }}>
+          <CardContent>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  fullWidth
+                  label="Document Name"
+                  value={doc.name}
+                  onChange={(e) => onUpdateDocument(doc.id, 'name', e.target.value)}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControl fullWidth>
+                  <InputLabel>Document Type</InputLabel>
+                  <Select
+                    value={doc.type}
+                    onChange={(e) => onUpdateDocument(doc.id, 'type', e.target.value)}
+                    label="Document Type"
+                  >
+                    {documentTypes.map(type => (
+                      <MenuItem key={type} value={type}>{type}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControl fullWidth>
+                  <InputLabel>Status</InputLabel>
+                  <Select
+                    value={doc.status}
+                    onChange={(e) => onUpdateDocument(doc.id, 'status', e.target.value)}
+                    label="Status"
+                  >
+                    <MenuItem value="pending">Pending</MenuItem>
+                    <MenuItem value="uploaded">Uploaded</MenuItem>
+                    <MenuItem value="verified">Verified</MenuItem>
+                    <MenuItem value="rejected">Rejected</MenuItem>
+                    <MenuItem value="expired">Expired</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  fullWidth
+                  label="Upload Date"
+                  type="date"
+                  value={doc.uploadDate ? doc.uploadDate.split('T')[0] : ''}
+                  onChange={(e) => onUpdateDocument(doc.id, 'uploadDate', e.target.value ? new Date(e.target.value).toISOString() : null)}
+                  InputLabelProps={{ shrink: true }}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  fullWidth
+                  label="Expiry Date"
+                  type="date"
+                  value={doc.expiryDate ? doc.expiryDate.split('T')[0] : ''}
+                  onChange={(e) => onUpdateDocument(doc.id, 'expiryDate', e.target.value ? new Date(e.target.value).toISOString() : null)}
+                  InputLabelProps={{ shrink: true }}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  fullWidth
+                  label="Uploaded By"
+                  value={doc.uploadedBy}
+                  onChange={(e) => onUpdateDocument(doc.id, 'uploadedBy', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Notes"
+                  multiline
+                  rows={2}
+                  value={doc.notes}
+                  onChange={(e) => onUpdateDocument(doc.id, 'notes', e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Box display="flex" alignItems="center" gap={2}>
+                  <Checkbox
+                    checked={doc.required}
+                    onChange={(e) => onUpdateDocument(doc.id, 'required', e.target.checked)}
+                  />
+                  <Typography variant="body2">Required Document</Typography>
+                  <IconButton
+                    color="error"
+                    onClick={() => onRemoveDocument(doc.id)}
+                    disabled={documents.length === 1}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+      ))}
+
+      {/* Document Summary */}
+      <Card sx={{
+        mt: 2,
+        bgcolor: 'info.main',
+        color: 'white',
+        borderRadius: 2,
+        boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
+      }}>
+        <CardContent sx={{ p: 2.5 }}>
+          <Typography variant="h6" gutterBottom sx={{
+            fontSize: '1.1rem',
+            fontWeight: 'bold',
+            mb: 2
+          }}>
+            Document Summary
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={3}>
+              <Typography variant="body2" sx={{
+                opacity: 0.8,
+                fontSize: '0.75rem',
+                textTransform: 'uppercase',
+                fontWeight: 500,
+                mb: 0.5
+              }}>
+                Total Documents
+              </Typography>
+              <Typography variant="h5" sx={{
+                fontSize: '1.25rem',
+                fontWeight: 'bold'
+              }}>
+                {documents.length}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Typography variant="body2" sx={{
+                opacity: 0.8,
+                fontSize: '0.75rem',
+                textTransform: 'uppercase',
+                fontWeight: 500,
+                mb: 0.5
+              }}>
+                Required
+              </Typography>
+              <Typography variant="h5" sx={{
+                fontSize: '1.25rem',
+                fontWeight: 'bold'
+              }}>
+                {documents.filter(doc => doc.required).length}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Typography variant="body2" sx={{
+                opacity: 0.8,
+                fontSize: '0.75rem',
+                textTransform: 'uppercase',
+                fontWeight: 500,
+                mb: 0.5
+              }}>
+                Uploaded
+              </Typography>
+              <Typography variant="h5" sx={{
+                fontSize: '1.25rem',
+                fontWeight: 'bold'
+              }}>
+                {documents.filter(doc => doc.status === 'uploaded' || doc.status === 'verified').length}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <Typography variant="body2" sx={{
+                opacity: 0.8,
+                fontSize: '0.75rem',
+                textTransform: 'uppercase',
+                fontWeight: 500,
+                mb: 0.5
+              }}>
+                Pending
+              </Typography>
+              <Typography variant="h5" sx={{
+                fontSize: '1.25rem',
+                fontWeight: 'bold'
+              }}>
+                {documents.filter(doc => doc.status === 'pending').length}
+              </Typography>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+    </Box>
+  );
+});
+
+DocumentationManagementTab.displayName = 'DocumentationManagementTab';
+
+/**
+ * Customs Workflow Tab Component (from SalesOrder)
+ */
+const CustomsWorkflowTab = memo(({
+  values,
+  fieldStates,
+  getFieldProps,
+  getFieldStateColor,
+  getFieldStateIcon,
+  FIELD_STATES,
+  handleFieldChange,
+  customsWorkflow,
+  onUpdateCustomsStep,
+  getCustomsWorkflowProgress
+}) => {
+  return (
+    <Box>
+      <Typography variant="h6" gutterBottom>
+        Customs Workflow Management
+      </Typography>
+
+      {/* Customs Progress */}
+      <Card sx={{ mb: 3, bgcolor: 'primary.main', color: 'white' }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Workflow Progress: {Math.round(getCustomsWorkflowProgress())}%
+          </Typography>
+          <LinearProgress
+            variant="determinate"
+            value={getCustomsWorkflowProgress()}
+            sx={{ mb: 2, bgcolor: 'rgba(255,255,255,0.2)' }}
+          />
+          <Typography variant="body2" sx={{ opacity: 0.8 }}>
+            Current Step: {customsWorkflow.steps.find(step => !step.completed)?.name || 'Completed'}
+          </Typography>
+        </CardContent>
+      </Card>
+
+      {/* Customs Steps */}
+      <List>
+        {customsWorkflow.steps.map((step, index) => (
+          <ListItem key={step.id}>
+            <ListItemIcon>
+              <Checkbox
+                checked={step.completed}
+                onChange={(e) => onUpdateCustomsStep(step.id, e.target.checked)}
+                color="primary"
+              />
+            </ListItemIcon>
+            <ListItemText
+              primary={
+                <Box display="flex" alignItems="center" gap={2}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    {step.name}
+                  </Typography>
+                  <Chip
+                    label={step.completed ? 'Completed' : 'Pending'}
+                    color={step.completed ? 'success' : 'default'}
+                    size="small"
+                  />
+                </Box>
+              }
+              secondary={
+                step.date && (
+                  <Typography variant="caption" color="textSecondary">
+                    Completed on: {new Date(step.date).toLocaleDateString()}
+                  </Typography>
+                )
+              }
+            />
+          </ListItem>
+        ))}
+      </List>
+
+      {/* Customs Details */}
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid item xs={12} md={6}>
+          <FormControl fullWidth>
+            <InputLabel>Current Step</InputLabel>
+            <Select
+              value={customsWorkflow.currentStep}
+              onChange={(e) => handleFieldChange('customsWorkflow.currentStep', e.target.value)}
+              label="Current Step"
+            >
+              {customsWorkflow.steps.map(step => (
+                <MenuItem key={step.id} value={step.id}>{step.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            label="Customs Officer"
+            value={customsWorkflow.customsOfficer}
+            onChange={(e) => handleFieldChange('customsWorkflow.customsOfficer', e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            label="Estimated Processing Time"
+            value={customsWorkflow.estimatedProcessingTime}
+            onChange={(e) => handleFieldChange('customsWorkflow.estimatedProcessingTime', e.target.value)}
+            placeholder="e.g., 2-3 business days"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            label="Customs Remarks"
+            multiline
+            rows={3}
+            value={customsWorkflow.remarks}
+            onChange={(e) => handleFieldChange('customsWorkflow.remarks', e.target.value)}
+          />
+        </Grid>
+      </Grid>
+    </Box>
+  );
+});
+
+CustomsWorkflowTab.displayName = 'CustomsWorkflowTab';
+
+/**
+ * Customs Declaration Tab Component (from SalesOrder)
+ */
+const CustomsDeclarationTab = memo(({
+  values,
+  fieldStates,
+  getFieldProps,
+  getFieldStateColor,
+  getFieldStateIcon,
+  FIELD_STATES,
+  handleFieldChange
+}) => {
+  return (
+    <Card>
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          Customs Declaration Details
+        </Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth>
+              <InputLabel>BC Code</InputLabel>
+              <Select
+                value={values.bcCode}
+                onChange={(e) => handleFieldChange('bcCode', e.target.value)}
+                label="BC Code"
+              >
+                <MenuItem value=""><em>No BC Code</em></MenuItem>
+                {bcCodes.map(code => (
+                  <MenuItem key={code.code} value={code.code}>
+                    {code.code} - {code.description}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="BC Description"
+              value={values.bcDescription}
+              onChange={(e) => handleFieldChange('bcDescription', e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Import License"
+              value={values.importLicense}
+              onChange={(e) => handleFieldChange('importLicense', e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Export License"
+              value={values.exportLicense}
+              onChange={(e) => handleFieldChange('exportLicense', e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Certificate of Origin"
+              value={values.certificateOrigin}
+              onChange={(e) => handleFieldChange('certificateOrigin', e.target.value)}
+            />
+          </Grid>
+
+          {/* Freight Details from SalesOrder */}
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="AWB Number (Air)"
+              value={values.awbNumber}
+              onChange={(e) => handleFieldChange('awbNumber', e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="BL Number (Sea)"
+              value={values.blNumber}
+              onChange={(e) => handleFieldChange('blNumber', e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Vessel Name"
+              value={values.vesselName}
+              onChange={(e) => handleFieldChange('vesselName', e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Voyage Number"
+              value={values.voyageNumber}
+              onChange={(e) => handleFieldChange('voyageNumber', e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Port of Loading"
+              value={values.portLoading}
+              onChange={(e) => handleFieldChange('portLoading', e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Port of Discharge"
+              value={values.portDischarge}
+              onChange={(e) => handleFieldChange('portDischarge', e.target.value)}
+            />
+          </Grid>
+
+          {/* Owner Information */}
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              label="Consignor"
+              value={values.consignor}
+              onChange={(e) => handleFieldChange('consignor', e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              label="Consignee"
+              value={values.consignee}
+              onChange={(e) => handleFieldChange('consignee', e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              label="Notify Party"
+              value={values.notifyParty}
+              onChange={(e) => handleFieldChange('notifyParty', e.target.value)}
+            />
+          </Grid>
+
+          {/* Additional Information */}
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Marks and Numbers"
+              multiline
+              rows={2}
+              value={values.marksAndNumbers}
+              onChange={(e) => handleFieldChange('marksAndNumbers', e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Special Instructions"
+              multiline
+              rows={3}
+              value={values.specialInstructions}
+              onChange={(e) => handleFieldChange('specialInstructions', e.target.value)}
+            />
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  );
+});
+
+CustomsDeclarationTab.displayName = 'CustomsDeclarationTab';
+
+/**
  * Main Quotation Component
  */
 const Quotation = () => {
@@ -2222,6 +2981,7 @@ const Quotation = () => {
   const [customers, setCustomers] = useState([]);
   const [hsCodes, setHSCodes] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedQuotation, setSelectedQuotation] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -2246,6 +3006,12 @@ const Quotation = () => {
     addOtherCost,
     updateOtherCost,
     removeOtherCost,
+    addDocument,
+    updateDocument,
+    removeDocument,
+    updateCustomsStep,
+    getCustomsWorkflowProgress,
+    updateConsignmentFee,
     handleSubmit,
     generateQuotationNumber,
     totals
@@ -2519,12 +3285,17 @@ const Quotation = () => {
 
   // Optimized filtering
   const filteredQuotations = useMemo(() => {
-    return quotations.filter(quotation =>
-      quotation.quotationNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      quotation.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      quotation.destination?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [quotations, searchTerm]);
+    return quotations.filter(quotation => {
+      const matchesSearch =
+        quotation.quotationNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        quotation.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        quotation.destination?.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesStatus = selectedStatus === 'all' || quotation.status === selectedStatus;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [quotations, searchTerm, selectedStatus]);
 
   // Helper functions
   const getStatusColor = useCallback((status) => {
@@ -2537,24 +3308,182 @@ const Quotation = () => {
     }
   }, []);
 
-  const steps = ['Customer Info', 'Route & Service', 'Cargo Details', 'Cost Calculation', 'Terms & Conditions', 'Review & Submit'];
+  const steps = ['Customer Info', 'Route & Service', 'Cargo Details', 'Cost Calculation', 'Documentation Management', 'Customs Workflow', 'Customs Declaration', 'Terms & Conditions', 'Review & Submit'];
+
+  // Calculate statistics for display
+  const totalQuotations = quotations.length;
+  const activeQuotations = quotations.filter(q => q.status === 'Draft' || q.status === 'Pending').length;
+  const confirmedQuotations = quotations.filter(q => q.status === 'Approved' || q.status === 'Sent').length;
+  const totalRevenue = quotations
+    .filter(q => q.status === 'Approved')
+    .reduce((sum, q) => sum + (parseFloat(q.sellingPrice) || 0), 0);
 
   return (
-    <ErrorBoundary>
       <Box>
+        {/* Header */}
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-          <Typography variant="h4">Quotations</Typography>
+          <Box>
+            <Typography variant="h4" sx={{ fontWeight: 'bold', fontSize: '2rem', color: 'primary.main', mb: 1 }}>
+              Quotation Management
+            </Typography>
+            <Typography variant="subtitle1" sx={{ color: 'text.secondary', fontSize: '1rem' }}>
+              BridGe Warehouse Management - Enhanced Quotation & Cost Management
+            </Typography>
+          </Box>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
             onClick={handleAdd}
+            sx={{
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              py: 1.5,
+              px: 3
+            }}
           >
-            New Quotation
+            Create New Quotation
           </Button>
         </Box>
 
-        <Card sx={{ mb: 3 }}>
-          <CardContent>
+        {/* Statistics Cards */}
+        <Grid container spacing={2} sx={{ mb: 3 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{
+              height: '100%',
+              minHeight: 120,
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              borderRadius: 2,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+            }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Typography sx={{
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                  opacity: 0.9,
+                  mb: 1.5,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>
+                  Total Quotations
+                </Typography>
+                <Typography variant="h4" sx={{
+                  fontWeight: 'bold',
+                  fontSize: '2rem',
+                  lineHeight: 1.2,
+                  wordBreak: 'break-word'
+                }}>
+                  {totalQuotations}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{
+              height: '100%',
+              minHeight: 120,
+              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+              color: 'white',
+              borderRadius: 2,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+            }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Typography sx={{
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                  opacity: 0.9,
+                  mb: 1.5,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>
+                  Active Quotations
+                </Typography>
+                <Typography variant="h4" sx={{
+                  fontWeight: 'bold',
+                  fontSize: '2rem',
+                  lineHeight: 1.2,
+                  wordBreak: 'break-word'
+                }}>
+                  {activeQuotations}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{
+              height: '100%',
+              minHeight: 120,
+              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+              color: 'white',
+              borderRadius: 2,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+            }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Typography sx={{
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                  opacity: 0.9,
+                  mb: 1.5,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>
+                  Confirmed Quotations
+                </Typography>
+                <Typography variant="h4" sx={{
+                  fontWeight: 'bold',
+                  fontSize: '2rem',
+                  lineHeight: 1.2,
+                  wordBreak: 'break-word'
+                }}>
+                  {confirmedQuotations}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{
+              height: '100%',
+              minHeight: 120,
+              background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+              color: 'white',
+              borderRadius: 2,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+            }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Typography sx={{
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                  opacity: 0.9,
+                  mb: 1.5,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>
+                  Total Revenue
+                </Typography>
+                <Typography variant="h5" sx={{
+                  fontWeight: 'bold',
+                  fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
+                  lineHeight: 1.2,
+                  wordBreak: 'break-word',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>
+                  {formatCurrency(totalRevenue)}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+        <Alert severity="info" sx={{ mb: 2 }}>
+          <strong>Enhanced Quotation System:</strong> Complete freight forwarding quotation management with comprehensive
+          cargo details, consignment fee structures, customs documentation, and cost calculations. All quotations are
+          integrated with customer data and inventory for accurate pricing.
+        </Alert>
+
+        {/* Search and Filters */}
+        <Grid container spacing={2} sx={{ mb: 2 }}>
+          <Grid item xs={12} md={6}>
             <TextField
               fullWidth
               label="Search quotations..."
@@ -2565,8 +3494,25 @@ const Quotation = () => {
                 startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />,
               }}
             />
-          </CardContent>
-        </Card>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth>
+              <InputLabel>Filter by Status</InputLabel>
+              <Select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                label="Filter by Status"
+              >
+                <MenuItem value="all">All Status</MenuItem>
+                <MenuItem value="Draft">Draft</MenuItem>
+                <MenuItem value="Pending">Pending</MenuItem>
+                <MenuItem value="Approved">Approved</MenuItem>
+                <MenuItem value="Sent">Sent</MenuItem>
+                <MenuItem value="Rejected">Rejected</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
 
         <TableContainer component={Paper}>
           <Table>
@@ -2729,6 +3675,49 @@ const Quotation = () => {
                 )}
 
                 {activeTab === 4 && (
+                  <DocumentationManagementTab
+                    values={values}
+                    fieldStates={fieldStates}
+                    getFieldProps={getFieldProps}
+                    getFieldStateColor={getFieldStateColor}
+                    getFieldStateIcon={getFieldStateIcon}
+                    FIELD_STATES={FIELD_STATES}
+                    handleFieldChange={handleFieldChange}
+                    documents={values.documents || []}
+                    onAddDocument={addDocument}
+                    onUpdateDocument={updateDocument}
+                    onRemoveDocument={removeDocument}
+                  />
+                )}
+
+                {activeTab === 5 && (
+                  <CustomsWorkflowTab
+                    values={values}
+                    fieldStates={fieldStates}
+                    getFieldProps={getFieldProps}
+                    getFieldStateColor={getFieldStateColor}
+                    getFieldStateIcon={getFieldStateIcon}
+                    FIELD_STATES={FIELD_STATES}
+                    handleFieldChange={handleFieldChange}
+                    customsWorkflow={values.customsWorkflow}
+                    onUpdateCustomsStep={updateCustomsStep}
+                    getCustomsWorkflowProgress={getCustomsWorkflowProgress}
+                  />
+                )}
+
+                {activeTab === 6 && (
+                  <CustomsDeclarationTab
+                    values={values}
+                    fieldStates={fieldStates}
+                    getFieldProps={getFieldProps}
+                    getFieldStateColor={getFieldStateColor}
+                    getFieldStateIcon={getFieldStateIcon}
+                    FIELD_STATES={FIELD_STATES}
+                    handleFieldChange={handleFieldChange}
+                  />
+                )}
+
+                {activeTab === 7 && (
                   <TermsConditionsTab
                     values={values}
                     fieldStates={fieldStates}
@@ -2885,7 +3874,6 @@ const Quotation = () => {
           </Snackbar>
         </Dialog>
       </Box>
-    </ErrorBoundary>
   );
 };
 

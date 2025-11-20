@@ -1,0 +1,759 @@
+{
+  "warehouses": [
+    {
+      "id": "wh-jakarta-01",
+      "name": "Warehouse Jakarta",
+      "country": "Indonesia",
+      "city": "Jakarta",
+      "address": "Jl. Tanjungsari No. 45, Jakarta Utara 14140",
+      "contactPerson": "Budi Santoso",
+      "phone": "+62-21-123-4567",
+      "email": "wh.jakarta@bakhtera.id",
+      "capacity": 50000,
+      "currentLoad": 5000,
+      "status": "Aktif",
+      "areas": [
+        {
+          "name": "Gudang A",
+          "zones": [
+            "Zona 1",
+            "Zona 2",
+            "Zona 3"
+          ],
+          "capacity": 15000
+        },
+        {
+          "name": "Gudang B",
+          "zones": [
+            "Zona 1",
+            "Zona 2",
+            "Zona Khusus"
+          ],
+          "capacity": 20000
+        }
+      ],
+      "createdAt": "2025-01-15T10:00:00.000Z",
+      "updatedAt": "2025-11-17T09:00:00.000Z"
+    },
+    {
+      "id": "wh-surabaya-01",
+      "name": "Warehouse Surabaya",
+      "country": "Indonesia",
+      "city": "Surabaya",
+      "address": "Jl. Perak Timur No. 88, Surabaya 60165",
+      "contactPerson": "Siti Wijaya",
+      "phone": "+62-31-456-7890",
+      "email": "wh.surabaya@bakhtera.id",
+      "capacity": 35000,
+      "currentLoad": 2500,
+      "status": "Aktif",
+      "areas": [
+        {
+          "name": "Gudang B",
+          "zones": [
+            "Zona 1",
+            "Zona 2"
+          ],
+          "capacity": 18000
+        },
+        {
+          "name": "Gudang C",
+          "zones": [
+            "Zona 1",
+            "Zona 2"
+          ],
+          "capacity": 17000
+        }
+      ],
+      "createdAt": "2025-02-20T11:30:00.000Z",
+      "updatedAt": "2025-11-17T09:15:00.000Z"
+    },
+    {
+      "id": "wh-bandung-01",
+      "name": "Warehouse Bandung",
+      "country": "Indonesia",
+      "city": "Bandung",
+      "address": "Jl. Cihampelas No. 200, Bandung 40141",
+      "contactPerson": "Ahmad Kusuma",
+      "phone": "+62-22-789-0123",
+      "email": "wh.bandung@bakhtera.id",
+      "capacity": 40000,
+      "currentLoad": 10000,
+      "status": "Aktif",
+      "areas": [
+        {
+          "name": "Gudang C",
+          "zones": [
+            "Zona 1",
+            "Zona 2"
+          ],
+          "capacity": 20000
+        },
+        {
+          "name": "Gudang D",
+          "zones": [
+            "Zona 1"
+          ],
+          "capacity": 20000
+        }
+      ],
+      "createdAt": "2025-03-10T14:45:00.000Z",
+      "updatedAt": "2025-11-17T09:30:00.000Z"
+    },
+    {
+      "id": "wh-medan-01",
+      "name": "Warehouse Medan",
+      "country": "Indonesia",
+      "city": "Medan",
+      "address": "Jl. Gatot Subroto No. 15, Medan 20122",
+      "contactPerson": "Reza Pratama",
+      "phone": "+62-61-234-5678",
+      "email": "wh.medan@bakhtera.id",
+      "capacity": 30000,
+      "currentLoad": 3200,
+      "status": "Aktif",
+      "areas": [
+        {
+          "name": "Gudang B",
+          "zones": [
+            "Zona Khusus"
+          ],
+          "capacity": 30000
+        }
+      ],
+      "createdAt": "2025-04-05T08:15:00.000Z",
+      "updatedAt": "2025-11-17T09:45:00.000Z"
+    },
+    {
+      "id": "wh-jakarta-02",
+      "name": "Warehouse Jakarta Port",
+      "country": "Indonesia",
+      "city": "Jakarta",
+      "address": "Jl. Pelabuhan No. 100, Tanjung Priok, Jakarta 14340",
+      "contactPerson": "Dedi Gunawan",
+      "phone": "+62-21-987-6543",
+      "email": "wh.port@bakhtera.id",
+      "capacity": 60000,
+      "currentLoad": 450,
+      "status": "Aktif",
+      "areas": [
+        {
+          "name": "Gudang A",
+          "zones": [
+            "Zona 3"
+          ],
+          "capacity": 30000
+        },
+        {
+          "name": "Gudang E",
+          "zones": [
+            "Zona 1",
+            "Zona 2"
+          ],
+          "capacity": 30000
+        }
+      ],
+      "createdAt": "2025-05-12T16:00:00.000Z",
+      "updatedAt": "2025-11-17T10:00:00.000Z"
+    }
+  ],
+  "inventory": [
+    {
+      "id": "inv-001",
+      "sku": "SKU-ELEC-001",
+      "name": "Electronic Components - Transistor BC547",
+      "category": "Electronics",
+      "warehouseId": "wh-jakarta-01",
+      "warehouseName": "Warehouse Jakarta",
+      "location": "Gudang A, Zona 1, Rack B-05",
+      "qty": 4600,
+      "unit": "pcs",
+      "weight": 0.5,
+      "createdAt": "2025-11-10T09:00:00.000Z",
+      "updatedAt": "2025-11-17T09:46:44.110Z"
+    },
+    {
+      "id": "inv-002",
+      "sku": "SKU-TEXT-001",
+      "name": "Textile - Cotton Fabric Roll",
+      "category": "Textiles",
+      "warehouseId": "wh-surabaya-01",
+      "warehouseName": "Warehouse Surabaya",
+      "location": "Gudang B, Zona 2, Rack C-12",
+      "qty": 2500,
+      "unit": "meter",
+      "weight": 15,
+      "createdAt": "2025-11-08T10:15:00.000Z",
+      "updatedAt": "2025-11-16T14:30:00.000Z"
+    },
+    {
+      "id": "inv-003",
+      "sku": "SKU-PLAST-001",
+      "name": "Plastic Pellets - HDPE Grade",
+      "category": "Plastics",
+      "warehouseId": "wh-bandung-01",
+      "warehouseName": "Warehouse Bandung",
+      "location": "Gudang C, Zona 1, Rack A-08",
+      "qty": 10000,
+      "unit": "kg",
+      "weight": 500,
+      "createdAt": "2025-11-05T11:45:00.000Z",
+      "updatedAt": "2025-11-15T09:20:00.000Z"
+    },
+    {
+      "id": "inv-004",
+      "sku": "SKU-CHEM-001",
+      "name": "Chemical - Sodium Chloride NaCl",
+      "category": "Chemicals",
+      "warehouseId": "wh-medan-01",
+      "warehouseName": "Warehouse Medan",
+      "location": "Gudang B, Zona Khusus, Rack X-01",
+      "qty": 3200,
+      "unit": "kg",
+      "weight": 160,
+      "createdAt": "2025-11-09T13:00:00.000Z",
+      "updatedAt": "2025-11-14T16:45:00.000Z"
+    },
+    {
+      "id": "inv-005",
+      "sku": "SKU-VPART-001",
+      "name": "Vehicle Parts - Engine Piston Kit",
+      "category": "Vehicle Parts",
+      "warehouseId": "wh-jakarta-02",
+      "warehouseName": "Warehouse Jakarta Port",
+      "location": "Gudang A, Zona 3, Rack D-15",
+      "qty": 450,
+      "unit": "set",
+      "weight": 2.5,
+      "createdAt": "2025-11-12T08:30:00.000Z",
+      "updatedAt": "2025-11-17T10:15:00.000Z"
+    }
+  ],
+  "consignments": [
+    {
+      "id": "cons-test-001",
+      "awbNumber": "AWB-TEST-001",
+      "blNumber": "BL-TEST-001",
+      "consignee": "PT. Test Electronics Tbk",
+      "asalBC": "BC 2.3",
+      "asalLokasi": "China",
+      "tujuanBC": "BC 2.3",
+      "tujuanLokasi": "Jakarta",
+      "tanggalMasuk": "2025-11-15",
+      "tanggalKeluar": "2025-11-17",
+      "status": "Sudah Keluar",
+      "keterangan": "HS: 8517.62.00 - Electronic Components",
+      "lokasi": "Gudang A, Zona 1, Rack B-05",
+      "documents": [],
+      "dispatchedToInventory": false,
+      "createdAt": "2025-11-15T09:00:00.000Z",
+      "updatedAt": "2025-11-17T09:46:44.110Z"
+    },
+    {
+      "id": "cons-test-002",
+      "awbNumber": "AWB-TEST-002",
+      "blNumber": "BL-TEST-002",
+      "consignee": "CV. Textile Suppliers",
+      "asalBC": "BC 2.5",
+      "asalLokasi": "Jakarta",
+      "tujuanBC": "BC 2.5",
+      "tujuanLokasi": "Surabaya",
+      "tanggalMasuk": "2025-11-16",
+      "tanggalKeluar": "",
+      "status": "Selesai BC",
+      "keterangan": "HS: 6109.10.00 - Textile Products",
+      "lokasi": "Gudang B, Zona 2, Rack C-12",
+      "documents": [],
+      "dispatchedToInventory": false,
+      "createdAt": "2025-11-16T10:30:00.000Z",
+      "updatedAt": "2025-11-17T13:00:00.000Z"
+    },
+    {
+      "id": "cons-test-003",
+      "awbNumber": "AWB-TEST-003",
+      "blNumber": "BL-TEST-003",
+      "consignee": "PT. Plastic Industries",
+      "asalBC": "BC 2.7",
+      "asalLokasi": "Bandung",
+      "tujuanBC": "BC 2.7",
+      "tujuanLokasi": "Jakarta",
+      "tanggalMasuk": "2025-11-14",
+      "tanggalKeluar": "2025-11-17",
+      "status": "Sudah Keluar",
+      "keterangan": "HS: 3907.50.00 - Plastic Pellets",
+      "lokasi": "Gudang C, Zona 1, Rack A-08",
+      "documents": [],
+      "dispatchedToInventory": false,
+      "createdAt": "2025-11-14T11:45:00.000Z",
+      "updatedAt": "2025-11-17T12:00:00.000Z"
+    }
+  ],
+  "_idempotency": {},
+  "quotations": [
+    {
+      "id": "QT-001",
+      "quotationNumber": "QT-2025-001",
+      "customerName": "PT. Maju Jaya",
+      "customerEmail": "contact@majujaya.id",
+      "customerPhone": "+62-21-1234567",
+      "quotationDate": "2025-11-18",
+      "validUntil": "2025-12-18",
+      "deliveryDate": "2025-12-25",
+      "items": [
+        {
+          "sku": "SKU-001",
+          "description": "Product A",
+          "quantity": 100,
+          "unitPrice": 50000
+        }
+      ],
+      "subtotal": 5000000,
+      "tax": 500000,
+      "total": 5500000,
+      "terms": "Net 30",
+      "status": "draft",
+      "approvedBy": null,
+      "approvedAt": null,
+      "approverNote": null,
+      "salesOrderId": null,
+      "convertedAt": null,
+      "createdAt": "2025-11-18T05:26:40.169Z",
+      "updatedAt": "2025-11-18T05:26:40.169Z"
+    },
+    {
+      "id": "QT-001",
+      "quotationNumber": "QT-2025-001",
+      "customerName": "PT. Maju Jaya",
+      "customerEmail": "contact@majujaya.id",
+      "customerPhone": "+62-21-1234567",
+      "quotationDate": "2025-11-18",
+      "validUntil": "2025-12-18",
+      "deliveryDate": "2025-12-25",
+      "items": [
+        {
+          "sku": "SKU-001",
+          "description": "Product A",
+          "quantity": 100,
+          "unitPrice": 50000
+        }
+      ],
+      "subtotal": 5000000,
+      "tax": 500000,
+      "total": 5500000,
+      "terms": "Net 30",
+      "status": "draft",
+      "approvedBy": null,
+      "approvedAt": null,
+      "approverNote": null,
+      "salesOrderId": null,
+      "convertedAt": null,
+      "createdAt": "2025-11-18T05:26:49.657Z",
+      "updatedAt": "2025-11-18T05:26:49.657Z"
+    },
+    {
+      "id": "QT-1763443712588",
+      "quotationNumber": "QT-TEST-002",
+      "customerName": "PT. Test Customer",
+      "customerEmail": "test@customer.id",
+      "customerPhone": "+62-21-9999999",
+      "quotationDate": "2025-11-18",
+      "validUntil": "2025-12-18",
+      "deliveryDate": "2025-12-25",
+      "items": [
+        {
+          "sku": "SKU-TEST-001",
+          "description": "Test Product",
+          "quantity": 50,
+          "unitPrice": 100000
+        }
+      ],
+      "subtotal": 5000000,
+      "tax": 500000,
+      "total": 5500000,
+      "terms": "Net 30",
+      "status": "converted",
+      "approvedBy": "user_admin",
+      "approvedAt": null,
+      "approverNote": "Approved by management",
+      "salesOrderId": "SO-1763443733204",
+      "convertedAt": "2025-11-18T05:28:53.204Z",
+      "createdAt": "2025-11-18T05:28:32.588Z",
+      "updatedAt": "2025-11-18T05:28:53.204Z"
+    },
+    {
+      "id": "QT-1763443935474",
+      "quotationNumber": "QT-DEMO-003",
+      "customerName": "PT. Demo Company A",
+      "customerEmail": "demo@companyA.id",
+      "customerPhone": "+62-21-1111111",
+      "quotationDate": "2025-11-18",
+      "validUntil": "2025-12-18",
+      "deliveryDate": "2025-12-28",
+      "items": [
+        {
+          "sku": "SKU-DEMO-001",
+          "description": "Demo Product A",
+          "quantity": 100,
+          "unitPrice": 150000
+        }
+      ],
+      "subtotal": 15000000,
+      "tax": 1500000,
+      "total": 16500000,
+      "terms": "Net 30",
+      "status": "converted",
+      "approvedBy": "admin",
+      "approvedAt": "2025-11-18T05:32:00Z",
+      "approverNote": "Approved for demo purposes",
+      "salesOrderId": "SO-1763443952425",
+      "convertedAt": "2025-11-18T05:32:32.425Z",
+      "createdAt": "2025-11-18T05:32:15.474Z",
+      "updatedAt": "2025-11-18T05:32:32.425Z"
+    },
+    {
+      "id": "QT-BRIDGE-1001",
+      "quotationNumber": "QT-BRIDGE-2025-1001",
+      "quotationType": "event_warehouse",
+      "quotationDate": "2025-11-18",
+      "validUntil": "2025-12-18",
+      "status": "draft",
+      "customer": {
+        "id": "CUST-EXPO-001",
+        "name": "PT Event Organizer Indonesia",
+        "company": "EventOrg",
+        "taxId": "12.345.678.9-012.345",
+        "address": "Jl. Event 123, Jakarta",
+        "phone": "021-1234567",
+        "email": "info@eventorg.co.id",
+        "pic": {
+          "name": "Budi Santoso",
+          "phone": "0812-3456789",
+          "email": "budi@eventorg.co.id"
+        }
+      },
+      "event": {
+        "name": "Indonesia Expo 2025",
+        "type": "international_exhibition",
+        "startDate": "2025-12-01",
+        "endDate": "2025-12-05",
+        "venue": "Jakarta Convention Center",
+        "city": "Jakarta",
+        "country": "Indonesia",
+        "internationalStatus": "international"
+      },
+      "shipment": {
+        "referenceNumber": "PO-2025-EX-001",
+        "importExportStatus": "import",
+        "awb": "AWB-EX-1001",
+        "bl": "",
+        "customsDocType": "BC23",
+        "hsCode": "8528.7290",
+        "countryOfOrigin": "Korea",
+        "estimatedArrival": "2025-11-22",
+        "transportMode": "air",
+        "carrier": "KoreanAir",
+        "incoterms": "CIF"
+      },
+      "warehouse": {
+        "storageStartDate": "2025-11-25",
+        "storageEndDate": "2025-12-06",
+        "totalStorageDays": 11,
+        "storageType": "climate_controlled",
+        "areaNeeded": 120,
+        "specialRequirements": [
+          "climate_controlled_18-25C",
+          "24/7_surveillance"
+        ]
+      },
+      "items": [
+        {
+          "id": "ITEM-EX-01",
+          "itemName": "LED Display 55\"",
+          "sku": "SKU-DISPLAY-55",
+          "description": "Large LED Display",
+          "commodityType": "electronics",
+          "hsCode": "8528.7290",
+          "countryOfOrigin": "Korea",
+          "quantity": 4,
+          "unitOfMeasure": "pcs",
+          "grossWeight": 100,
+          "netWeight": 80,
+          "dimensions": "120x10x75",
+          "cbm": 0.36,
+          "unitPrice": 2000000,
+          "total": 8000000
+        }
+      ],
+      "services": [
+        {
+          "id": "SVC-EX-01",
+          "serviceName": "Receiving & Inspection",
+          "serviceType": "handling",
+          "description": "Receiving and inspection",
+          "quantity": 1,
+          "unitPrice": 5000000,
+          "total": 5000000
+        }
+      ],
+      "costs": {
+        "goodsSubtotal": 8000000,
+        "servicesSubtotal": 5000000,
+        "subtotalBeforeTax": 13000000,
+        "taxPercent": 11,
+        "taxAmount": 1430000,
+        "total": 14430000
+      },
+      "terms": {
+        "paymentTerms": "Net 30",
+        "depositPercent": 50,
+        "deliveryTerms": "Customer pickup"
+      },
+      "notes": "Temporary sample quotation for BRiDGE event flow",
+      "approvalRequired": true,
+      "createdAt": "2025-11-18T09:51:08.456Z",
+      "createdBy": "sales_bridge_001"
+    },
+    {
+      "id": "QT-BRIDGE-1002",
+      "quotationNumber": "QT-BRIDGE-2025-1002",
+      "quotationType": "event_warehouse",
+      "quotationDate": "2025-11-18",
+      "validUntil": "2025-12-18",
+      "status": "converted",
+      "customer": {
+        "id": "CUST-EXPO-002",
+        "name": "PT Expo Nusantara",
+        "company": "ExpoNus",
+        "taxId": "98.765.432.1-000.000",
+        "address": "Jl. Nusantara 45, Jakarta",
+        "phone": "021-7654321",
+        "email": "hello@exponus.co.id",
+        "pic": {
+          "name": "Siti Nur",
+          "phone": "0813-9876543",
+          "email": "siti@exponus.co.id"
+        }
+      },
+      "event": {
+        "name": "GIIAS Mini 2025",
+        "type": "exhibition",
+        "startDate": "2025-11-28",
+        "endDate": "2025-11-30",
+        "venue": "ICE BSD",
+        "city": "Tangerang",
+        "country": "Indonesia",
+        "internationalStatus": "domestic"
+      },
+      "shipment": {
+        "referenceNumber": "PO-2025-GIIAS-002",
+        "importExportStatus": "domestic",
+        "awb": "",
+        "bl": "",
+        "customsDocType": "BC25",
+        "hsCode": "9406.0090",
+        "countryOfOrigin": "Indonesia",
+        "estimatedArrival": "",
+        "transportMode": "land",
+        "carrier": "",
+        "incoterms": "EXW"
+      },
+      "warehouse": {
+        "storageStartDate": "2025-11-20",
+        "storageEndDate": "2025-11-31",
+        "totalStorageDays": 12,
+        "storageType": "normal",
+        "areaNeeded": 80,
+        "specialRequirements": [
+          "forklift_access"
+        ]
+      },
+      "items": [
+        {
+          "id": "ITEM-EX-02",
+          "itemName": "Booth Furniture Set",
+          "sku": "SKU-FURN-01",
+          "description": "Tables and chairs",
+          "commodityType": "furniture",
+          "hsCode": "9406.0090",
+          "countryOfOrigin": "Indonesia",
+          "quantity": 50,
+          "unitOfMeasure": "pcs",
+          "grossWeight": 20,
+          "netWeight": 18,
+          "dimensions": "100x100x120",
+          "cbm": 1.2,
+          "unitPrice": 500000,
+          "total": 25000000
+        }
+      ],
+      "services": [
+        {
+          "id": "SVC-EX-02",
+          "serviceName": "Storage Service",
+          "serviceType": "storage",
+          "description": "Storage service",
+          "quantity": 80,
+          "duration": 12,
+          "unit": "m2-days",
+          "unitPrice": 50000,
+          "total": 480000000
+        }
+      ],
+      "costs": {
+        "goodsSubtotal": 25000000,
+        "servicesSubtotal": 480000000,
+        "subtotalBeforeTax": 505000000,
+        "taxPercent": 11,
+        "taxAmount": 55550000,
+        "total": 560550000
+      },
+      "terms": {
+        "paymentTerms": "DP 50%",
+        "depositPercent": 50,
+        "deliveryTerms": "Warehouse delivery"
+      },
+      "notes": "Approved sample quotation converted to sales order in sample data",
+      "approvalRequired": true,
+      "approvedBy": "manager_01",
+      "approvedAt": "2025-11-18T09:51:08.457Z",
+      "salesOrderId": "SO-1763474100532",
+      "createdAt": "2025-11-18T09:51:08.457Z",
+      "createdBy": "sales_bridge_002",
+      "convertedAt": "2025-11-18T13:55:00.532Z",
+      "updatedAt": "2025-11-18T13:55:00.532Z"
+    }
+  ],
+  "salesOrders": [
+    {
+      "id": "SO-1763443733204",
+      "quotationId": "QT-1763443712588",
+      "quotationNumber": "QT-TEST-002",
+      "customerName": "PT. Test Customer",
+      "customerEmail": "test@customer.id",
+      "customerPhone": "+62-21-9999999",
+      "items": [
+        {
+          "sku": "SKU-TEST-001",
+          "description": "Test Product",
+          "quantity": 50,
+          "unitPrice": 100000
+        }
+      ],
+      "subtotal": 5000000,
+      "tax": 500000,
+      "total": 5500000,
+      "deliveryDate": "2025-12-25",
+      "status": "pending_confirmation",
+      "confirmedAt": null,
+      "confirmedBy": null,
+      "createdAt": "2025-11-18T05:28:53.204Z",
+      "updatedAt": "2025-11-18T05:28:53.204Z"
+    },
+    {
+      "id": "SO-1763443952425",
+      "quotationId": "QT-1763443935474",
+      "quotationNumber": "QT-DEMO-003",
+      "customerName": "PT. Demo Company A",
+      "customerEmail": "demo@companyA.id",
+      "customerPhone": "+62-21-1111111",
+      "items": [
+        {
+          "sku": "SKU-DEMO-001",
+          "description": "Demo Product A",
+          "quantity": 100,
+          "unitPrice": 150000
+        }
+      ],
+      "subtotal": 15000000,
+      "tax": 1500000,
+      "total": 16500000,
+      "deliveryDate": "2025-12-28",
+      "status": "confirmed",
+      "confirmedAt": "2025-11-18T05:32:45.642Z",
+      "confirmedBy": "customer",
+      "createdAt": "2025-11-18T05:32:32.425Z",
+      "updatedAt": "2025-11-18T05:32:45.642Z"
+    },
+    {
+      "id": "SO-BRIDGE-2001",
+      "quotationId": "QT-BRIDGE-1002",
+      "quotationNumber": "QT-BRIDGE-2025-1002",
+      "customerName": "PT Expo Nusantara",
+      "customerEmail": "hello@exponus.co.id",
+      "items": [
+        {
+          "id": "ITEM-EX-02",
+          "description": "Booth Furniture Set",
+          "quantity": 50,
+          "unitPrice": 500000,
+          "total": 25000000
+        }
+      ],
+      "subtotal": 25000000,
+      "tax": 2750000,
+      "total": 27750000,
+      "deliveryDate": "2025-11-20",
+      "status": "confirmed",
+      "confirmedAt": "2025-11-18T09:51:08.457Z",
+      "confirmedBy": "customer",
+      "createdAt": "2025-11-18T09:51:08.457Z",
+      "updatedAt": "2025-11-18T09:51:08.457Z"
+    },
+    {
+      "id": "SO-1763474100532",
+      "quotationId": "QT-BRIDGE-1002",
+      "quotationNumber": "QT-BRIDGE-2025-1002",
+      "items": [
+        {
+          "id": "ITEM-EX-02",
+          "itemName": "Booth Furniture Set",
+          "sku": "SKU-FURN-01",
+          "description": "Tables and chairs",
+          "commodityType": "furniture",
+          "hsCode": "9406.0090",
+          "countryOfOrigin": "Indonesia",
+          "quantity": 50,
+          "unitOfMeasure": "pcs",
+          "grossWeight": 20,
+          "netWeight": 18,
+          "dimensions": "100x100x120",
+          "cbm": 1.2,
+          "unitPrice": 500000,
+          "total": 25000000
+        }
+      ],
+      "subtotal": 0,
+      "tax": 0,
+      "total": 0,
+      "status": "pending_confirmation",
+      "confirmedAt": null,
+      "confirmedBy": null,
+      "createdAt": "2025-11-18T13:55:00.532Z",
+      "updatedAt": "2025-11-18T13:55:00.532Z"
+    }
+  ],
+  "invoices": [
+    {
+      "salesOrderId": "SO-1763443733204",
+      "customerName": "PT. Test Customer",
+      "customerEmail": "test@example.com",
+      "invoiceDate": "2025-11-18",
+      "dueDate": "2025-12-18",
+      "items": [
+        {
+          "description": "Test Product",
+          "quantity": 50,
+          "unitPrice": 100000
+        }
+      ],
+      "subtotal": 5000000,
+      "tax": 500000,
+      "total": 5500000,
+      "id": "INV-1763444769468",
+      "invoiceNumber": "INV-2025-4891",
+      "status": "draft",
+      "createdAt": "2025-11-18T05:46:09.468Z",
+      "updatedAt": "2025-11-18T05:46:09.468Z"
+    }
+  ]
+}

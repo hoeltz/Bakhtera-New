@@ -119,53 +119,79 @@ import {
 
 // Components
 import Dashboard from './components/Dashboard';
+import BRidge from './components/BRidge';
 import CustomerManagement from './components/CustomerManagement';
-import Quotation, { OperationalCost } from './components/Quotation';
+import Quotation from './components/Quotation';
+import QuotationApproval from './components/Quotation-Approval';
+import BRidgeQuotationEvent from './components/BRidgeQuotationEvent';
+import OperationalCost from './components/OperationalCost';
 import ShippingManagement from './components/ShippingManagement';
 import VendorManagement from './components/VendorManagement';
 import PurchaseOrder from './components/PurchaseOrder';
-import InvoiceManagement from './components/InvoiceManagement';
 import FinanceReporting from './components/FinanceReporting';
 import Analytics from './components/Analytics';
-import HSCodeManagement from './components/HSCodeManagement';
-import WarehouseManagement from './components/WarehouseManagement';
 import CourierManagement from './components/CourierManagement';
 import ProfitLossReport from './components/ProfitLossReport';
 import BalanceSheetReport from './components/BalanceSheetReport';
 import CashFlowReport from './components/CashFlowReport';
 import AgingReport from './components/AgingReport';
 
+// B-ridge Components
+import BRidgeDashboard from './components/BRidgeDashboard';
+import BLINKDashboard from './components/BLINKDashboard';
+import BIGDashboard from './components/BIGDashboard';
+import BRidgeCustomerManagement from './components/BRidgeCustomerManagement';
+import BRidgeVendorManagement from './components/BRidgeVendorManagement';
+import BRidgeInventoryManagement from './components/BRidgeInventoryManagement';
+import BRidgeAccountingLedger from './components/BRidgeAccountingLedger';
+import CustomsPortalMenuDemo from './components/CustomsPortalMenuDemo';
+
+import BRidgeCustomsPortal from './components/BRidgeCustomsPortal';
+import WarehouseManagement from './components/WarehouseManagement';
+import InventoryManagement from './components/InventoryManagement';
+import SalesOrderManagement from './components/SalesOrderManagement';
+import SalesOrderManagementApproval from './components/SalesOrderManagement-Approval';
+
 // Import OperationalCost component (defined in Quotation.js)
 
 const drawerWidth = 280;
 
 const menuItems = [
-  // Main Operational Menu
+  // Main Dashboard
   { text: 'Dashboard', icon: <DashboardIcon />, path: '/', category: 'main' },
-  { text: 'Quotations', icon: <ReceiptIcon />, path: '/quotations', category: 'main' },
-  { text: 'Purchase Orders', icon: <PurchaseIcon />, path: '/purchase-orders', category: 'main' },
 
-  // Customer & Vendor Management
-  { text: 'Customer Management', icon: <PeopleIcon />, path: '/customers', category: 'management' },
-  { text: 'Vendor Management', icon: <BusinessIcon />, path: '/vendors', category: 'management' },
+  // BRiDGE - Warehouse Management Suite (FREIGHT FORWARDING CORE MODULE)
+  { text: 'BridGe - Warehouse Management', icon: <InventoryIcon />, path: '/bridge', category: 'bridge', isParent: true },
+  { text: 'Customer Management', icon: <PeopleIcon />, path: '/bridge/customer', category: 'bridge' },
+  { text: 'Vendor Management', icon: <BusinessIcon />, path: '/bridge/vendor', category: 'bridge' },
+  { text: 'Warehouse Management', icon: <InventoryIcon />, path: '/bridge/warehouse', category: 'bridge' },
+  { text: 'Inventory Management', icon: <CategoryIcon />, path: '/bridge/inventory', category: 'bridge' },
+  { text: 'Quotation Management', icon: <MoneyIcon />, path: '/bridge/quotation', category: 'bridge' },
+  { text: 'Sales Order Management', icon: <AssignmentIcon />, path: '/bridge/enhanced-sales-order', category: 'bridge' },
+  { text: 'Accounting Ledger', icon: <AccountBalanceIcon />, path: '/bridge/accounting', category: 'bridge' },
+  { text: 'Customs Portal', icon: <WarningIcon />, path: '/bridge/customs-portal', category: 'bridge' },
 
-  // Operational Details
-  { text: 'Shipping Management', icon: <ShippingIcon />, path: '/shipping', category: 'operations' },
-  { text: 'Warehouse Management', icon: <InventoryIcon />, path: '/warehouse', category: 'operations' },
-  { text: 'Courier Management', icon: <CourierIcon />, path: '/courier', category: 'operations' },
-  { text: 'HS Code Management', icon: <CategoryIcon />, path: '/hs-codes', category: 'operations' },
+  // BLiNK - Freight & Forwarder (OPERATIONS MODULE)
+  { text: 'BlinK - Freight & Forward Management', icon: <TrendingUpIcon />, path: '/blink', category: 'blink', isParent: true },
+  { text: 'Customer Management', icon: <PeopleIcon />, path: '/blink/customer', category: 'blink' },
+  { text: 'Vendor Management', icon: <BusinessIcon />, path: '/blink/vendor', category: 'blink' },
+  { text: 'Quotation Management', icon: <MoneyIcon />, path: '/blink/quotation', category: 'blink' },
+  { text: 'Sales Order Management', icon: <AssignmentIcon />, path: '/blink/enhanced-sales-order', category: 'blink' },
+  { text: 'Operation Management', icon: <ShippingIcon />, path: '/blink/operation', category: 'blink' },
+  { text: 'Accounting Management', icon: <AccountBalanceIcon />, path: '/blink/accounting', category: 'blink' },
 
-  // Internal Cost Management (Management Only)
-  { text: 'Operational Cost', icon: <MoneyIcon />, path: '/operational-cost', category: 'management' },
+  // BiG - Event Management
+  { text: 'BiG - Event Management', icon: <BusinessIcon />, path: '/big', category: 'big', isParent: true },
+  { text: 'Customer Management', icon: <PeopleIcon />, path: '/big/customer', category: 'big' },
+  { text: 'Vendor Management', icon: <BusinessIcon />, path: '/big/vendor', category: 'big' },
+  { text: 'Quotation Management', icon: <MoneyIcon />, path: '/big/quotation', category: 'big' },
+  { text: 'Sales Order Management', icon: <AssignmentIcon />, path: '/big/enhanced-sales-order', category: 'big' },
+  { text: 'Accounting Management', icon: <AccountBalanceIcon />, path: '/big/accounting', category: 'big' },
+  { text: 'Timeline Management', icon: <ScheduleIcon />, path: '/big/timeline', category: 'big' },
 
-  // Financial Management
-  { text: 'Invoices', icon: <ReceiptIcon />, path: '/invoices', category: 'finance' },
-  { text: 'Profit & Loss', icon: <TrendingUpIcon />, path: '/profit-loss', category: 'finance' },
-  { text: 'Balance Sheet', icon: <AccountBalanceIcon />, path: '/balance-sheet', category: 'finance' },
-  { text: 'Cash Flow', icon: <MoneyIcon />, path: '/cash-flow', category: 'finance' },
-  { text: 'AR/AP Aging', icon: <ScheduleIcon />, path: '/aging-report', category: 'finance' },
-  { text: 'Finance Reports', icon: <FinanceIcon />, path: '/finance-reports', category: 'finance' },
-  { text: 'Analytics', icon: <AnalyticsIcon />, path: '/analytics', category: 'finance' },
+  // Reports (Standalone)
+  { text: 'Financial Reports', icon: <AssessmentIcon />, path: '/financial-reports', category: 'reports' },
+  { text: 'Analytics & Insights', icon: <AnalyticsIcon />, path: '/analytics', category: 'reports' },
 ];
 
 function App() {
@@ -218,33 +244,87 @@ function App() {
       <List>
         {menuItems.map((item, index) => {
           const prevCategory = index > 0 ? menuItems[index - 1].category : null;
-          const showDivider = prevCategory && prevCategory !== item.category;
+          const showDivider = prevCategory && prevCategory !== item.category && !item.isHeader;
 
           return (
             <React.Fragment key={item.text}>
               {showDivider && <Divider sx={{ my: 1, backgroundColor: 'rgba(255, 255, 255, 0.3)' }} />}
-              <ListItem disablePadding>
-                <ListItemButton
-                  selected={location.pathname === item.path}
-                  onClick={() => handleMenuClick(item.path)}
-                  sx={{
-                    '&.Mui-selected': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                      '&:hover': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+              
+              {/* Parent Menu Items (Clickable with Dashboard Navigation) */}
+              {item.isParent && (
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={location.pathname === item.path}
+                    onClick={() => handleMenuClick(item.path)}
+                    sx={{
+                      py: 2,
+                      px: 2,
+                      backgroundColor: 'rgba(63, 81, 181, 0.1)',
+                      '&.Mui-selected': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                        },
                       },
-                    },
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    },
-                  }}
-                >
-                  <ListItemIcon sx={{ color: 'white' }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={item.text} />
-                </ListItemButton>
-              </ListItem>
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      sx={{
+                        '& .MuiTypography-root': {
+                          fontWeight: 'bold',
+                          fontSize: '1.0rem',
+                          color: 'white',
+                          lineHeight: 1.3
+                        }
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )}
+              
+              {/* Child Menu Items with Proper Indentation */}
+              {!item.isParent && (
+                <ListItem disablePadding>
+                  <ListItemButton
+                    selected={location.pathname === item.path}
+                    onClick={() => handleMenuClick(item.path)}
+                    sx={{
+                      pl: 6, // Consistent indentation for all child items
+                      py: 1,
+                      '&.Mui-selected': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                        },
+                      },
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      sx={{
+                        '& .MuiTypography-root': {
+                          fontSize: '0.9rem',
+                          fontWeight: 'normal',
+                          color: 'white'
+                        }
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )}
             </React.Fragment>
           );
         })}
@@ -316,27 +396,48 @@ function App() {
         }}
       >
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/customers" element={<CustomerManagement />} />
-          <Route path="/quotations" element={<Quotation />} />
-          <Route path="/purchase-orders" element={<PurchaseOrder />} />
-          <Route path="/hs-codes" element={<HSCodeManagement />} />
-          <Route path="/shipping" element={<ShippingManagement />} />
-          <Route path="/warehouse" element={<WarehouseManagement />} />
-          <Route path="/courier" element={<CourierManagement />} />
-          <Route path="/vendors" element={<VendorManagement />} />
-          <Route path="/invoices" element={<InvoiceManagement />} />
-          <Route path="/profit-loss" element={<ProfitLossReport />} />
-          <Route path="/balance-sheet" element={<BalanceSheetReport />} />
-          <Route path="/cash-flow" element={<CashFlowReport />} />
-          <Route path="/aging-report" element={<AgingReport />} />
-          <Route path="/finance-reports" element={<FinanceReporting />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/operational-cost" element={<OperationalCost />} />
-        </Routes>
+           <Route path="/" element={<Dashboard />} />
+           
+           {/* BLINK Module Routes */}
+           <Route path="/blink" element={<BLINKDashboard />} />
+           <Route path="/blink/customer" element={<BRidgeCustomerManagement />} />
+           <Route path="/blink/vendor" element={<BRidgeVendorManagement />} />
+           <Route path="/blink/quotation" element={<QuotationApproval />} />
+           <Route path="/blink/enhanced-sales-order" element={<SalesOrderManagementApproval />} />
+           <Route path="/blink/operation" element={<ShippingManagement />} />
+           <Route path="/blink/accounting" element={<BRidgeAccountingLedger />} />
+           
+           {/* BRiDGE Module Routes */}
+           <Route path="/bridge" element={<BRidgeDashboard />} />
+           <Route path="/bridge/customer" element={<BRidgeCustomerManagement />} />
+           <Route path="/bridge/warehouse" element={<WarehouseManagement />} />
+           <Route path="/bridge/inventory" element={<InventoryManagement />} />
+           <Route path="/bridge/quotation" element={<BRidgeQuotationEvent />} />
+           <Route path="/bridge/quotation-approval" element={<QuotationApproval />} />
+           <Route path="/bridge/sales-order" element={<SalesOrderManagementApproval />} />
+           <Route path="/bridge/enhanced-sales-order" element={<SalesOrderManagementApproval />} />
+           <Route path="/bridge/customs-menu-demo" element={<CustomsPortalMenuDemo />} />
+
+           <Route path="/bridge/accounting" element={<BRidgeAccountingLedger />} />
+           <Route path="/bridge/customs-portal" element={<BRidgeCustomsPortal />} />
+           <Route path="/bridge/bea-cukai-portal" element={<BRidgeCustomsPortal />} />
+           
+           {/* BIG Module Routes */}
+           <Route path="/big" element={<BIGDashboard />} />
+           <Route path="/big/customer" element={<BRidgeCustomerManagement />} />
+           <Route path="/big/vendor" element={<BRidgeVendorManagement />} />
+           <Route path="/big/quotation" element={<QuotationApproval />} />
+           <Route path="/big/enhanced-sales-order" element={<SalesOrderManagementApproval />} />
+           <Route path="/big/accounting" element={<BRidgeAccountingLedger />} />
+           <Route path="/big/timeline" element={<Analytics />} />
+           
+           {/* Reports */}
+           <Route path="/financial-reports" element={<FinanceReporting />} />
+           <Route path="/analytics" element={<Analytics />} />
+         </Routes>
       </Box>
-    </Box>
-  );
+   </Box>
+ );
 }
 
 // Wrap App with Error Boundary only (Router is in index.js)

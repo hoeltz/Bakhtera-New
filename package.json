@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Bakhtera1 - Advanced Freight Forwarding Management System",
   "homepage": "https://bakhtera-one.vercel.app",
+  "proxy": "http://localhost:4000",
   "main": "src/index.js",
   "scripts": {
     "start": "react-scripts start",

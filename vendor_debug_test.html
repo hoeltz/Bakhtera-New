@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BRiDGE Vendor Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+        h1 { color: #667eea; }
+        .section { margin: 20px 0; padding: 15px; background: #f9f9f9; border-left: 4px solid #667eea; }
+        button { 
+            background: #667eea; color: white; border: none; padding: 10px 20px; 
+            border-radius: 4px; cursor: pointer; margin: 5px; font-weight: bold;
+        }
+        button:hover { background: #764ba2; }
+        pre { 
+            background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 4px; 
+            overflow-x: auto; font-size: 12px;
+        }
+        .success { color: #43e97b; }
+        .error { color: #f5576c; }
+        .info { color: #667eea; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #667eea; color: white; }
+        tr:nth-child(even) { background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 BRiDGE Vendor Management - Debug Test</h1>
+        
+        <div class="section">
+            <h2>Storage Status</h2>
+            <button onclick="checkStorage()">Check LocalStorage</button>
+            <button onclick="seedVendors()">Seed Sample Vendors</button>
+            <button onclick="clearStorage()">Clear All Data</button>
+            <div id="storageOutput"></div>
+        </div>
+
+        <div class="section">
+            <h2>Data Inspection</h2>
+            <button onclick="showVendorData()">Show Vendor Data</button>
+            <button onclick="showCustomerData()">Show Customer Data</button>
+            <button onclick="showInventoryData()">Show Inventory Data</button>
+            <div id="dataOutput"></div>
+        </div>
+
+        <div class="section">
+            <h2>Application Status</h2>
+            <div id="appStatus"></div>
+        </div>
+    </div>
+
+    <script>
+        function log(msg, type = 'info') {
+            console.log(`[${type.toUpperCase()}] ${msg}`);
+        }
+
+        function formatJSON(obj, limit = 500) {
+            const str = JSON.stringify(obj, null, 2);
+            return str.length > limit ? str.substring(0, limit) + '...' : str;
+        }
+
+        function checkStorage() {
+            const output = document.getElementById('storageOutput');
+            const keys = ['bridgeVendorData', 'bridgeCustomerData', 'bridge_inventory', 'bridge_quotations', 'bridge_invoices', 'bridge_sales_orders'];
+            let html = '<h3>LocalStorage Status:</h3><table><tr><th>Key</th><th>Exists</th><th>Size</th><th>Preview</th></tr>';
+            
+            keys.forEach(key => {
+                const data = localStorage.getItem(key);
+                const exists = data ? '✓ Yes' : '✗ No';
+                const size = data ? (data.length / 1024).toFixed(2) + ' KB' : '-';
+                const preview = data ? JSON.parse(data).length + ' items' : '-';
+                html += `<tr><td><code>${key}</code></td><td class="success">${exists}</td><td>${size}</td><td>${preview}</td></tr>`;
+            });
+            html += '</table>';
+            output.innerHTML = html;
+            log('Storage checked', 'info');
+        }
+
+        function seedVendors() {
+            const vendors = [
+                {
+                    id: 'VEND-001', vendorId: 'BRIV24000001', companyName: 'Maju Shipping Line',
+                    contactPerson: 'Budi Santoso', email: 'budi@majushipping.com', phone: '+62-21-555-2001',
+                    status: 'Active', preferredVendor: true, serviceType: 'Shipping Line'
+                },
+                {
+                    id: 'VEND-002', vendorId: 'BRIV24000002', companyName: 'Garuda Air Cargo',
+                    contactPerson: 'Dewi Lestari', email: 'dewi@garudaaircargo.com', phone: '+62-21-555-3001',
+                    status: 'Active', preferredVendor: true, serviceType: 'Air Cargo'
+                },
+                {
+                    id: 'VEND-003', vendorId: 'BRIV24000003', companyName: 'Transporter Logistics',
+                    contactPerson: 'Ahmad Wijaya', email: 'ahmad@transporterlogistics.com', phone: '+62-21-555-4001',
+                    status: 'Active', preferredVendor: false, serviceType: 'Trucking'
+                }
+            ];
+            localStorage.setItem('bridgeVendorData', JSON.stringify(vendors));
+            const output = document.getElementById('storageOutput');
+            output.innerHTML = `<p class="success">✓ Seeded ${vendors.length} vendors to localStorage</p>`;
+            log(`Seeded ${vendors.length} vendors`, 'success');
+            checkStorage();
+        }
+
+        function showVendorData() {
+            const data = localStorage.getItem('bridgeVendorData');
+            const output = document.getElementById('dataOutput');
+            if (data) {
+                const vendors = JSON.parse(data);
+                output.innerHTML = `<h3>Vendor Data (${vendors.length} vendors):</h3><pre>${formatJSON(vendors, 1000)}</pre>`;
+                log(`Loaded ${vendors.length} vendors`, 'success');
+            } else {
+                output.innerHTML = '<p class="error">✗ No vendor data found in localStorage</p>';
+                log('No vendor data found', 'error');
+            }
+        }
+
+        function showCustomerData() {
+            const data = localStorage.getItem('bridgeCustomerData');
+            const output = document.getElementById('dataOutput');
+            if (data) {
+                const customers = JSON.parse(data);
+                output.innerHTML = `<h3>Customer Data (${customers.length} customers):</h3><pre>${formatJSON(customers, 1000)}</pre>`;
+                log(`Loaded ${customers.length} customers`, 'success');
+            } else {
+                output.innerHTML = '<p class="error">✗ No customer data found in localStorage</p>';
+                log('No customer data found', 'error');
+            }
+        }
+
+        function showInventoryData() {
+            const data = localStorage.getItem('bridge_inventory');
+            const output = document.getElementById('dataOutput');
+            if (data) {
+                const items = JSON.parse(data);
+                output.innerHTML = `<h3>Inventory Data (${items.length} items):</h3><pre>${formatJSON(items, 1000)}</pre>`;
+                log(`Loaded ${items.length} inventory items`, 'success');
+            } else {
+                output.innerHTML = '<p class="error">✗ No inventory data found in localStorage</p>';
+                log('No inventory data found', 'error');
+            }
+        }
+
+        function clearStorage() {
+            const keys = ['bridgeVendorData', 'bridgeCustomerData', 'bridge_inventory', 'bridge_quotations', 'bridge_invoices', 'bridge_sales_orders'];
+            keys.forEach(key => localStorage.removeItem(key));
+            const output = document.getElementById('storageOutput');
+            output.innerHTML = '<p class="success">✓ All BRIDGE data cleared from localStorage</p>';
+            log('All data cleared', 'error');
+        }
+
+        function updateAppStatus() {
+            const status = document.getElementById('appStatus');
+            const isDev = window.location.port === '3000';
+            const hasReact = !!window.React;
+            status.innerHTML = `
+                <p><strong>Frontend:</strong> <span class="${isDev ? 'success' : 'error'}">${isDev ? '✓ Dev Server (3000)' : '✗ Not Dev Server'}</span></p>
+                <p><strong>React:</strong> <span class="${hasReact ? 'success' : 'error'}">${hasReact ? '✓ Loaded' : '✗ Not Loaded'}</span></p>
+                <p><strong>LocalStorage:</strong> <span class="success">✓ Available</span></p>
+                <p><strong>Page:</strong> Debug Test Page (not main app)</p>
+            `;
+        }
+
+        window.onload = () => {
+            updateAppStatus();
+            checkStorage();
+            log('Debug page loaded', 'info');
+        };
+    </script>
+</body>
+</html>

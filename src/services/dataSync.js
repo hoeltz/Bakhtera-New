@@ -211,6 +211,56 @@ const dataSyncService = {
     }
   },
 
+  // B-ridge Customer operations
+  getCustomerData: () => {
+    try {
+      const data = localStorage.getItem('bridgeCustomerData');
+      if (data) {
+        return JSON.parse(data);
+      }
+      // If no data exists, return empty (seeding happens in component)
+      return [];
+    } catch (error) {
+      console.error('Error getting customer data:', error);
+      return [];
+    }
+  },
+
+  setCustomerData: (customers) => {
+    try {
+      localStorage.setItem('bridgeCustomerData', JSON.stringify(customers));
+      return true;
+    } catch (error) {
+      console.error('Error setting customer data:', error);
+      return false;
+    }
+  },
+
+  // B-ridge Vendor operations
+  getVendorData: () => {
+    try {
+      const data = localStorage.getItem('bridgeVendorData');
+      if (data) {
+        return JSON.parse(data);
+      }
+      // If no data exists, return empty (seeding happens in component)
+      return [];
+    } catch (error) {
+      console.error('Error getting vendor data:', error);
+      return [];
+    }
+  },
+
+  setVendorData: (vendors) => {
+    try {
+      localStorage.setItem('bridgeVendorData', JSON.stringify(vendors));
+      return true;
+    } catch (error) {
+      console.error('Error setting vendor data:', error);
+      return false;
+    }
+  },
+
   // HS Code operations
   getHSCodes: async () => {
     try {
@@ -357,6 +407,27 @@ const dataSyncService = {
     } catch (error) {
       console.error('Error deleting operational cost:', error);
       return true;
+    }
+  },
+
+  // Warehouse Data operations (for BRidgeCustomsPortal compatibility)
+  getWarehouseData: () => {
+    try {
+      const data = localStorage.getItem('bridgeWarehouseData');
+      return data ? JSON.parse(data) : {};
+    } catch (error) {
+      console.error('Error getting warehouse data:', error);
+      return {};
+    }
+  },
+
+  saveWarehouseData: (data) => {
+    try {
+      localStorage.setItem('bridgeWarehouseData', JSON.stringify(data));
+      return true;
+    } catch (error) {
+      console.error('Error saving warehouse data:', error);
+      return false;
     }
   }
 };
