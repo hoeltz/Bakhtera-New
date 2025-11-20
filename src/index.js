@@ -14,27 +14,50 @@ const router = {
 
 const theme = createTheme({
   palette: {
+    // Align primary/secondary with BRiDGE Customs Portal gradients
     primary: {
-      main: '#1976d2',
+      main: '#667eea',
+      contrastText: '#ffffff'
     },
     secondary: {
-      main: '#dc004e',
+      main: '#f5576c',
+      contrastText: '#ffffff'
+    },
+    info: {
+      main: '#4facfe'
+    },
+    success: {
+      main: '#43e97b'
     },
     background: {
       default: '#f5f5f5',
+      paper: '#ffffff'
     },
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    // Standardize header sizes to match Customs Portal screenshot
     h4: {
-      fontWeight: 600,
+      fontWeight: 700,
+      fontSize: '2rem'
     },
     h5: {
-      fontWeight: 600,
+      fontWeight: 700,
+      fontSize: '1.25rem'
     },
     h6: {
       fontWeight: 600,
+      fontSize: '1rem'
     },
+    subtitle1: {
+      fontSize: '0.875rem'
+    },
+    body1: {
+      fontSize: '0.9375rem'
+    },
+    body2: {
+      fontSize: '0.875rem'
+    }
   },
   components: {
     MuiDrawer: {
@@ -55,11 +78,50 @@ const theme = createTheme({
             },
           },
           '&:hover': {
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            backgroundColor: 'rgba(255, 255, 255, 0.08)',
           },
         },
       },
     },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+        }
+      }
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          borderRadius: 8,
+          fontWeight: 700
+        },
+        contained: {
+          boxShadow: 'none'
+        }
+      }
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        head: {
+          backgroundColor: '#667eea',
+          color: '#ffffff',
+          fontWeight: 700,
+          fontSize: '0.875rem',
+          padding: '16px'
+        }
+      }
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          fontWeight: 700,
+          borderRadius: 8
+        }
+      }
+    }
   },
 });
 
