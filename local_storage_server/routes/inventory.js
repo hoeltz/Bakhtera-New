@@ -535,7 +535,24 @@ router.get('/inventory/aggregations/mutasi', (req, res) => {
         if (t === 'reject' && code.startsWith('rej')) return true;
         return false;
       }).map(i => i.item_code));
-      if (alt.size > 0) movements = movements.filter(m => alt.has(m.item_code));
+      if (alt.size > 0) {
+        movements = movements.filter(m => alt.has(m.item_code));
+      } else {
+        // If still empty, try matching against movement item_name/item_code directly
+        const alt2 = new Set(movements.filter(m => {
+          const code = (m.item_code || '').toLowerCase();
+          const name = (m.item_name || '').toLowerCase();
+          const t = String(type).toLowerCase();
+          if (name.includes(t)) return true;
+          if (t === 'bahan' && code.startsWith('bbk')) return true;
+          if (t === 'produk' && code.startsWith('pj')) return true;
+          if (t === 'asset' && (code.startsWith('ast') || name.includes('mesin'))) return true;
+          if (t === 'reject' && code.startsWith('rej')) return true;
+          return false;
+        }).map(m => m.item_code));
+        if (alt2.size > 0) movements = movements.filter(m => alt2.has(m.item_code));
+      }
+      console.log('mutasi.type', type, 'allowed:', Array.from(allowed), 'alt:', Array.from(alt), 'movementsCountBefore:', store.movements.length, 'movementsAfterFilter:', movements.length);
     }
   }
 
