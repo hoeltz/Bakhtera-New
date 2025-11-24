@@ -45,6 +45,7 @@ import {
 import dataSyncService from '../services/dataSync';
 import notificationService from '../services/notificationService';
 import warehouseDataService from '../services/warehouseDataService';
+import { createMovement } from '../services/kepabeananService';
 import BridgeHeader from './BridgeHeader';
 import BridgeStatCard from './BridgeStatCard';
 
@@ -403,7 +404,17 @@ const BRidgeCustomsPortal = ({ onNotification }) => {
                 <InputLabel>Status</InputLabel>
                 <Select
                   value={formData.status}
-                  onChange={(e) => setFormData({...formData, status: e.target.value})}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    // Auto-set condition/approval when status indicates damaged/rejected
+                    if (val === 'TPPB_DAMAGED') {
+                      setFormData(prev => ({ ...prev, status: val, condition: 'rusak', approval_status: 'rejected' }));
+                    } else if (val === 'TPPB_REJECTED') {
+                      setFormData(prev => ({ ...prev, status: val, approval_status: 'rejected' }));
+                    } else {
+                      setFormData(prev => ({ ...prev, status: val }));
+                    }
+                  }}
                   label="Status"
                 >
                   {statusOptions.map(status => (
@@ -607,6 +618,36 @@ const BRidgeCustomsPortal = ({ onNotification }) => {
         };
         warehouseDataService.saveCustomsItems([...currentItems, newItem]);
         notificationService.showSuccess('Customs item added successfully');
+      }
+      // If item is marked TPPB_DAMAGED or TPPB_REJECTED, create an inventory movement record to log the event
+      try {
+        const status = itemData.status || (selectedItem && selectedItem.status) || '';
+        if (status === 'TPPB_DAMAGED' || status === 'TPPB_REJECTED') {
+          // create movement record in inventory to reflect damaged/rejected event
+          const qty = Number(itemData.quantity || 0) || 0;
+          await createMovement({
+            doc_type: 'TPPB',
+            doc_number: itemData.tppb_number || `TPPB-${Date.now()}`,
+            doc_date: new Date().toISOString().slice(0,10),
+            receipt_number: itemData.awbNumber || '',
+            sender_name: itemData.itemName || '',
+            item_code: itemData.id || (`CI-${Date.now()}`),
+            item_name: itemData.itemName || '',
+            qty: qty || 0,
+            unit: itemData.unit || 'unit',
+            value_amount: itemData.fob_value || 0,
+            value_currency: 'IDR',
+            movement_type: status === 'TPPB_DAMAGED' ? 'ADJUSTMENT' : 'OUT',
+            source: 'CUSTOMS_PORTAL',
+            note: `TPPB status: ${status} - ${itemData.qty_condition_breakdown || ''}`,
+            tppb_number: itemData.tppb_number || '',
+            hs_code: itemData.hs_code || '',
+            condition: itemData.condition || '',
+            approval_status: itemData.approval_status || ''
+          });
+        }
+      } catch (err) {
+        console.error('Error creating movement for damaged/rejected item', err);
       }
       loadCustomsData();
     } catch (error) {

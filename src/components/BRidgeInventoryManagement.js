@@ -1,31 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Card,
-  CardContent,
-  Typography,
-  Button,
-  TextField,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
+  Grid,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  IconButton,
-  Chip,
-  FormControl,
-  InputLabel,
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
   Select,
   MenuItem,
-  Grid,
+  FormControl,
+  InputLabel,
   Tabs,
   Tab,
+  IconButton,
+  Chip
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -784,124 +782,129 @@ const BridgeInventoryManagement = ({ onNotification }) => {
             </TableBody>
           ) : (
             <TableBody>
-              {filteredInventory.map((item) => (
-                <TableRow
-                key={item.id}
-                hover
-                sx={{
-                  '&:hover': { backgroundColor: 'rgba(103, 126, 234, 0.04)' },
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                <TableCell sx={{ py: 2, fontFamily: 'monospace' }}>
-                  {item.awb}
-                </TableCell>
-                <TableCell sx={{ py: 2, fontFamily: 'monospace' }}>
-                  {item.bl}
-                </TableCell>
-                <TableCell sx={{ py: 2 }}>
-                  <Chip
-                    label={item.shippingStatus}
-                    color={getStatusColor(item.shippingStatus)}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell sx={{ py: 2, maxWidth: 200 }}>
-                  <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {item.relatedDocuments?.join(', ') || 'N/A'}
-                  </Typography>
-                </TableCell>
-                <TableCell sx={{ py: 2, maxWidth: 180 }}>
-                  <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {item.consignee}
-                  </Typography>
-                </TableCell>
-                <TableCell sx={{ py: 2, maxWidth: 250 }}>
-                  <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {item.description}
-                  </Typography>
-                </TableCell>
-                <TableCell sx={{ py: 2 }}>
-                  <Typography variant="body2">
-                    {item.location}
-                  </Typography>
-                  {item.area && item.lot && item.rack && (
-                    <Typography variant="caption" color="textSecondary">
-                      Area {item.area}/Lot {item.lot}/Rack {item.rack}
-                    </Typography>
-                  )}
-                </TableCell>
-                <TableCell sx={{ py: 2, textAlign: 'center' }}>
-                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                    {(item.quantity || 0).toLocaleString()}
-                  </Typography>
-                </TableCell>
-                <TableCell sx={{ py: 2 }}>
-                  <Chip
-                    label={item.customsStatus}
-                    color={item.customsStatus === 'Import' ? 'success' : 'warning'}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell sx={{ py: 2 }}>
-                  <Typography variant="body2">{item.aju_number || '-'}</Typography>
-                  <Typography variant="caption" color="textSecondary">{item.golongan || '-'}</Typography>
-                </TableCell>
-                <TableCell sx={{ py: 2 }}>
-                  <Typography variant="caption">{item.masuk_warehouse_date ? new Date(item.masuk_warehouse_date).toLocaleDateString('id-ID') : '-'}</Typography>
-                  <Typography variant="caption" color="textSecondary">{item.event_date ? new Date(item.event_date).toLocaleDateString('id-ID') : '-'}</Typography>
-                </TableCell>
-                {/* TPPB / HS Code Column */}
-                <TableCell sx={{ py: 2 }}>
-                  <Typography variant="body2">{item.tppb_number || '-'}</Typography>
-                  <Typography variant="caption" color="textSecondary">{item.hs_code || '-'}</Typography>
-                </TableCell>
-                {/* Country / Destination Column */}
-                <TableCell sx={{ py: 2 }}>
-                  <Typography variant="caption">{item.country_of_origin || '-'}</Typography>
-                  <Typography variant="caption" color="textSecondary">
-                    {item.export_destination ? `→ ${item.export_destination}` : ''}
-                  </Typography>
-                </TableCell>
-                {/* Approval / Value Column */}
-                <TableCell sx={{ py: 2 }}>
-                  <Chip
-                    label={item.approval_status || 'pending'}
-                    color={item.approval_status === 'approved' ? 'success' : item.approval_status === 'rejected' ? 'error' : 'warning'}
-                    size="small"
-                    sx={{ mb: 0.5 }}
-                  />
-                  <Typography variant="caption" display="block">
-                    FOB: {(item.fob_value || 0).toLocaleString('id-ID')}
-                  </Typography>
-                  <Typography variant="caption" color="textSecondary">
-                    CIF: {(item.cif_value || 0).toLocaleString('id-ID')}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right" sx={{ py: 2 }}>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleOpenDialog(item)}
+              {filteredInventory.map((item) => {
+                const isProblem = (item.condition === 'rusak') || (item.approval_status === 'rejected') || (item.status === 'TPPB_DAMAGED') || (item.status === 'TPPB_REJECTED');
+                return (
+                  <TableRow
+                    key={item.id}
+                    hover
                     sx={{
-                      color: 'secondary.main',
-                      '&:hover': { backgroundColor: 'rgba(118, 75, 162, 0.1)' }
+                      '&:hover': { backgroundColor: 'rgba(103, 126, 234, 0.04)' },
+                      transition: 'all 0.2s ease',
+                      backgroundColor: isProblem ? '#fff6f6' : 'inherit',
+                      borderLeft: isProblem ? '4px solid #f87171' : 'none'
                     }}
                   >
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    color="error"
-                    onClick={() => handleDeleteItem(item)}
-                    sx={{
-                      '&:hover': { backgroundColor: 'rgba(211, 47, 47, 0.1)' }
-                    }}
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-              ))}
+                    <TableCell sx={{ py: 2, fontFamily: 'monospace' }}>
+                      {item.awb}
+                    </TableCell>
+                    <TableCell sx={{ py: 2, fontFamily: 'monospace' }}>
+                      {item.bl}
+                    </TableCell>
+                    <TableCell sx={{ py: 2 }}>
+                      <Chip
+                        label={item.shippingStatus}
+                        color={getStatusColor(item.shippingStatus)}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell sx={{ py: 2, maxWidth: 200 }}>
+                      <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {item.relatedDocuments?.join(', ') || 'N/A'}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ py: 2, maxWidth: 180 }}>
+                      <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {item.consignee}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ py: 2, maxWidth: 250 }}>
+                      <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {item.description}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ py: 2 }}>
+                      <Typography variant="body2">
+                        {item.location}
+                      </Typography>
+                      {item.area && item.lot && item.rack && (
+                        <Typography variant="caption" color="textSecondary">
+                          Area {item.area}/Lot {item.lot}/Rack {item.rack}
+                        </Typography>
+                      )}
+                    </TableCell>
+                    <TableCell sx={{ py: 2, textAlign: 'center' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                        {(item.quantity || 0).toLocaleString()}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ py: 2 }}>
+                      <Chip
+                        label={item.customsStatus}
+                        color={item.customsStatus === 'Import' ? 'success' : 'warning'}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell sx={{ py: 2 }}>
+                      <Typography variant="body2">{item.aju_number || '-'}</Typography>
+                      <Typography variant="caption" color="textSecondary">{item.golongan || '-'}</Typography>
+                    </TableCell>
+                    <TableCell sx={{ py: 2 }}>
+                      <Typography variant="caption">{item.masuk_warehouse_date ? new Date(item.masuk_warehouse_date).toLocaleDateString('id-ID') : '-'}</Typography>
+                      <Typography variant="caption" color="textSecondary">{item.event_date ? new Date(item.event_date).toLocaleDateString('id-ID') : '-'}</Typography>
+                    </TableCell>
+                    {/* TPPB / HS Code Column */}
+                    <TableCell sx={{ py: 2 }}>
+                      <Typography variant="body2">{item.tppb_number || '-'}</Typography>
+                      <Typography variant="caption" color="textSecondary">{item.hs_code || '-'}</Typography>
+                    </TableCell>
+                    {/* Country / Destination Column */}
+                    <TableCell sx={{ py: 2 }}>
+                      <Typography variant="caption">{item.country_of_origin || '-'}</Typography>
+                      <Typography variant="caption" color="textSecondary">
+                        {item.export_destination ? `→ ${item.export_destination}` : ''}
+                      </Typography>
+                    </TableCell>
+                    {/* Approval / Value Column */}
+                    <TableCell sx={{ py: 2 }}>
+                      <Chip
+                        label={item.approval_status || 'pending'}
+                        color={item.approval_status === 'approved' ? 'success' : item.approval_status === 'rejected' ? 'error' : 'warning'}
+                        size="small"
+                        sx={{ mb: 0.5 }}
+                      />
+                      <Typography variant="caption" display="block">
+                        FOB: {(item.fob_value || 0).toLocaleString('id-ID')}
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary">
+                        CIF: {(item.cif_value || 0).toLocaleString('id-ID')}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right" sx={{ py: 2 }}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleOpenDialog(item)}
+                        sx={{
+                          color: 'secondary.main',
+                          '&:hover': { backgroundColor: 'rgba(118, 75, 162, 0.1)' }
+                        }}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() => handleDeleteItem(item)}
+                        sx={{
+                          '&:hover': { backgroundColor: 'rgba(211, 47, 47, 0.1)' }
+                        }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
           )}
         </Table>
