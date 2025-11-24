@@ -1,4 +1,28 @@
 import React, { useState, useEffect } from 'react';
+import {
+  Box,
+  Paper,
+  Button,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  Alert,
+  CircularProgress,
+} from '@mui/material';
+import {
+  Download as DownloadIcon,
+  Print as PrintIcon,
+  Search as SearchIcon,
+} from '@mui/icons-material';
+import BRidgeKepabeananLayout from '../BRidgeKepabeananLayout';
 import { fetchInbound } from '../../services/kepabeananService';
 
 export default function InboundReport() {
@@ -13,6 +37,7 @@ export default function InboundReport() {
     const prior = new Date(now);
     prior.setDate(prior.getDate() - 30);
     setFilters((f) => ({ ...f, startDate: prior.toISOString().slice(0, 10), endDate: now.toISOString().slice(0, 10) }));
+    handleSearch();
     // eslint-disable-next-line
   }, []);
 
@@ -99,86 +124,195 @@ export default function InboundReport() {
   }
 
   return (
-    <div>
-      <h3 style={{ marginTop: 0 }}>Laporan Pemasukan Barang</h3>
+    <BRidgeKepabeananLayout
+      title="Laporan Pemasukan Barang"
+      subtitle="Laporan Penerimaan dan Pemasukan Barang ke Gudang (PIB)"
+      breadcrumbs={['Portal Kepabeanan', 'Pemasukan']}
+      actions={
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Button
+            variant="outlined"
+            color="inherit"
+            startIcon={<DownloadIcon />}
+            onClick={exportCSV}
+            disabled={!rows.length}
+            sx={{ color: 'white', borderColor: 'rgba(255, 255, 255, 0.5)' }}
+          >
+            Export CSV
+          </Button>
+          <Button
+            variant="outlined"
+            color="inherit"
+            startIcon={<PrintIcon />}
+            onClick={printTable}
+            disabled={!rows.length}
+            sx={{ color: 'white', borderColor: 'rgba(255, 255, 255, 0.5)' }}
+          >
+            Print
+          </Button>
+        </Box>
+      }
+    >
+      {/* Filters Section */}
+      <Paper elevation={1} sx={{ p: 2.5, mb: 3, backgroundColor: 'white' }}>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#667eea' }}>
+          Filter Data
+        </Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={2.4}>
+            <TextField
+              fullWidth
+              label="Tanggal Mulai"
+              type="date"
+              value={filters.startDate}
+              onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+              InputLabelProps={{ shrink: true }}
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={2.4}>
+            <TextField
+              fullWidth
+              label="Tanggal Akhir"
+              type="date"
+              value={filters.endDate}
+              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+              InputLabelProps={{ shrink: true }}
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={2.4}>
+            <TextField
+              fullWidth
+              label="Jenis Dokumen"
+              value={filters.docType}
+              onChange={(e) => setFilters({ ...filters, docType: e.target.value })}
+              placeholder="PIB / Lainnya"
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={2.4}>
+            <TextField
+              fullWidth
+              label="Kode/Nama Barang"
+              value={filters.item}
+              onChange={(e) => setFilters({ ...filters, item: e.target.value })}
+              placeholder="Cari..."
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={2.4}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={handleSearch}
+              disabled={loading}
+              startIcon={loading ? <CircularProgress size={20} /> : <SearchIcon />}
+              sx={{ mt: 0.5 }}
+            >
+              {loading ? 'Mencari...' : 'Cari'}
+            </Button>
+          </Grid>
+        </Grid>
+      </Paper>
 
-      <div style={{ border: '1px solid #f0f0f0', padding: 12, borderRadius: 6 }}>
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'end' }}>
-          <div>
-            <label>Periode Start</label>
-            <br />
-            <input type="date" value={filters.startDate} onChange={(e) => setFilters({ ...filters, startDate: e.target.value })} />
-          </div>
+      {/* Error Section */}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
 
-          <div>
-            <label>Periode End</label>
-            <br />
-            <input type="date" value={filters.endDate} onChange={(e) => setFilters({ ...filters, endDate: e.target.value })} />
-          </div>
+      {/* Summary Cards */}
+      {summary && (
+        <Grid container spacing={2} sx={{ mb: 3 }}>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card elevation={0} sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+              <CardContent>
+                <Typography color="inherit" variant="body2" sx={{ opacity: 0.8 }}>
+                  Total Dokumen
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 1 }}>
+                  {summary.totalRows || 0}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card elevation={0} sx={{ background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', color: 'white' }}>
+              <CardContent>
+                <Typography color="inherit" variant="body2" sx={{ opacity: 0.8 }}>
+                  Total Jumlah Masuk
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 1 }}>
+                  {(summary.totalQtyIn || 0).toLocaleString()}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card elevation={0} sx={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', color: 'white' }}>
+              <CardContent>
+                <Typography color="inherit" variant="body2" sx={{ opacity: 0.8 }}>
+                  Total Nilai (IDR)
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 1 }}>
+                  {(summary.totalValueIDR || 0).toLocaleString()}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      )}
 
-          <div>
-            <label>Jenis Dokumen</label>
-            <br />
-            <input value={filters.docType} onChange={(e) => setFilters({ ...filters, docType: e.target.value })} placeholder="PIB / Lainnya" />
-          </div>
-
-          <div>
-            <label>Kode / Nama Barang</label>
-            <br />
-            <input value={filters.item} onChange={(e) => setFilters({ ...filters, item: e.target.value })} placeholder="Kode atau nama" />
-          </div>
-
-          <div>
-            <button onClick={handleSearch} disabled={loading} style={{ padding: '6px 10px' }}>
-              {loading ? 'Loading...' : 'Preview'}
-            </button>
-          </div>
-
-          <div style={{ marginLeft: 'auto' }}>
-            <button onClick={exportCSV} disabled={!rows.length} style={{ marginRight: 8 }}>
-              Export CSV
-            </button>
-            <button onClick={printTable} disabled={!rows.length}>
-              Print
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div style={{ marginTop: 12 }}>
-        {error && <div style={{ color: 'red', marginBottom: 8 }}>{error}</div>}
-
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                {csvColumns().map((c) => (
-                  <th key={c.key} style={{ textAlign: 'left', borderBottom: '1px solid #ddd', padding: 8 }}>{c.label}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.length === 0 ? (
-                <tr><td colSpan={csvColumns().length} style={{ padding: 12 }}>Tidak ada data</td></tr>
-              ) : (
-                rows.map((r, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid #f5f5f5' }}>
-                    {csvColumns().map((c) => (
-                      <td key={c.key} style={{ padding: 8 }}>{String(r[c.key] ?? '')}</td>
-                    ))}
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {summary && (
-          <div style={{ marginTop: 8, color: '#333' }}>
-            <strong>Summary:</strong> Rows {summary.totalRows} — Total In: {summary.totalQtyIn} — Total Value (IDR): {summary.totalValueIDR ?? 0}
-          </div>
-        )}
-      </div>
-    </div>
+      {/* Table Section */}
+      <TableContainer component={Paper} elevation={1}>
+        <Table sx={{ minWidth: 'max-content' }}>
+          <TableHead>
+            <TableRow sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+              {csvColumns().map((col) => (
+                <TableCell
+                  key={col.key}
+                  sx={{
+                    fontWeight: 'bold',
+                    color: 'white',
+                    backgroundColor: '#667eea',
+                  }}
+                >
+                  {col.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.length === 0 && !loading ? (
+              <TableRow>
+                <TableCell colSpan={csvColumns().length} align="center" sx={{ py: 4 }}>
+                  <Typography color="textSecondary">Tidak ada data ditemukan</Typography>
+                </TableCell>
+              </TableRow>
+            ) : (
+              rows.map((row, idx) => (
+                <TableRow
+                  key={idx}
+                  hover
+                  sx={{
+                    '&:hover': { backgroundColor: 'rgba(103, 126, 234, 0.04)' },
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  {csvColumns().map((col) => (
+                    <TableCell key={col.key} sx={{ py: 1.5 }}>
+                      {String(row[col.key] ?? '')}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </BRidgeKepabeananLayout>
   );
 }

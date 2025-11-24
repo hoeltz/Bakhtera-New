@@ -314,8 +314,6 @@ const BridgeInventoryManagement = ({ onNotification }) => {
     })();
   }, []);
 
-  const [itemsList, setItemsList] = useState([]);
-
   const filteredInventory = inventory.filter(item => {
     const matchesSearch =
       item.awb?.toLowerCase().includes(searchTerm.toLowerCase()) ||

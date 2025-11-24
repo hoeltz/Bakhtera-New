@@ -115,6 +115,11 @@ import {
     TrackChanges as CourierIcon,
     Schedule as ScheduleIcon,
     AccountBalanceWallet as FinanceIcon,
+    ExpandMore as ExpandMoreIcon,
+    ExpandLess as ExpandLessIcon,
+    FileDocument as FileDocumentIcon,
+    TrendingDown as TrendingDownIcon,
+    Storage as StorageIcon,
   } from '@mui/icons-material';
 
 // Components
@@ -147,6 +152,13 @@ import CustomsPortalMenuDemo from './components/CustomsPortalMenuDemo';
 
 import BRidgeCustomsPortal from './components/BRidgeCustomsPortal';
 import BRidgeKepabeanan from './components/BRidgeKepabeanan';
+import InboundReport from './components/kepabeanan/InboundReport';
+import OutboundReport from './components/kepabeanan/OutboundReport';
+import WipReport from './components/kepabeanan/WipReport';
+import MutasiBahanReport from './components/kepabeanan/MutasiBahanReport';
+import MutasiProdukReport from './components/kepabeanan/MutasiProdukReport';
+import MutasiAssetReport from './components/kepabeanan/MutasiAssetReport';
+import RejectReport from './components/kepabeanan/RejectReport';
 import WarehouseManagement from './components/WarehouseManagement';
 import InventoryManagement from './components/InventoryManagement';
 import SalesOrderManagement from './components/SalesOrderManagement';
@@ -195,6 +207,7 @@ const menuItems = [
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [expandedMenus, setExpandedMenus] = useState({}); // Track expanded submenu
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
@@ -232,6 +245,13 @@ function App() {
     }
   };
 
+  const handleSubmenuToggle = (menuKey) => {
+    setExpandedMenus(prev => ({
+      ...prev,
+      [menuKey]: !prev[menuKey]
+    }));
+  };
+
   const drawer = (
     <Box>
       <Toolbar>
@@ -244,6 +264,95 @@ function App() {
         {menuItems.map((item, index) => {
           const prevCategory = index > 0 ? menuItems[index - 1].category : null;
           const showDivider = prevCategory && prevCategory !== item.category && !item.isHeader;
+
+          // Special handling for Kepabeanan menu
+          if (item.text === 'Kepabeanan' && item.category === 'bridge') {
+            const isExpanded = expandedMenus['kepabeanan'];
+            const kepabeananSubmenus = [
+              { label: 'Laporan Pemasukan Barang', path: '/bridge/kepabeanan/inbound', icon: <FileDocumentIcon /> },
+              { label: 'Laporan Pengeluaran Barang', path: '/bridge/kepabeanan/outbound', icon: <TrendingDownIcon /> },
+              { label: 'Laporan Posisi WIP', path: '/bridge/kepabeanan/wip', icon: <StorageIcon /> },
+              { label: 'Laporan Mutasi Bahan Baku', path: '/bridge/kepabeanan/mutasi_bahan', icon: <FileDocumentIcon /> },
+              { label: 'Laporan Mutasi Barang Jadi', path: '/bridge/kepabeanan/mutasi_produk', icon: <FileDocumentIcon /> },
+              { label: 'Laporan Mutasi Mesin', path: '/bridge/kepabeanan/mutasi_asset', icon: <FileDocumentIcon /> },
+              { label: 'Laporan Barang Reject/Scrap', path: '/bridge/kepabeanan/reject', icon: <WarningIcon /> },
+            ];
+
+            return (
+              <React.Fragment key={item.text}>
+                {showDivider && <Divider sx={{ my: 1, backgroundColor: 'rgba(255, 255, 255, 0.3)' }} />}
+                
+                {/* Kepabeanan Parent Menu - Collapsible */}
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => handleSubmenuToggle('kepabeanan')}
+                    sx={{
+                      py: 2,
+                      px: 2,
+                      backgroundColor: 'rgba(63, 81, 181, 0.1)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      sx={{
+                        '& .MuiTypography-root': {
+                          fontWeight: 'bold',
+                          fontSize: '1.0rem',
+                          color: 'white',
+                          lineHeight: 1.3
+                        }
+                      }}
+                    />
+                    {isExpanded ? <ExpandLessIcon sx={{ color: 'white' }} /> : <ExpandMoreIcon sx={{ color: 'white' }} />}
+                  </ListItemButton>
+                </ListItem>
+
+                {/* Kepabeanan Submenu Items */}
+                {isExpanded && kepabeananSubmenus.map((submenu) => (
+                  <ListItem key={submenu.path} disablePadding>
+                    <ListItemButton
+                      selected={location.pathname === submenu.path}
+                      onClick={() => handleMenuClick(submenu.path)}
+                      sx={{
+                        pl: 6,
+                        py: 1.2,
+                        borderLeft: location.pathname === submenu.path ? '3px solid #fff' : '3px solid transparent',
+                        '&.Mui-selected': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                          '&:hover': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                          },
+                        },
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        },
+                      }}
+                    >
+                      <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>
+                        {submenu.icon}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={submenu.label}
+                        sx={{
+                          '& .MuiTypography-root': {
+                            fontSize: '0.85rem',
+                            fontWeight: 'normal',
+                            color: 'white'
+                          }
+                        }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </React.Fragment>
+            );
+          }
 
           return (
             <React.Fragment key={item.text}>
@@ -418,6 +527,13 @@ function App() {
 
            <Route path="/bridge/accounting" element={<BRidgeAccountingLedger />} />
            <Route path="/bridge/kepabeanan" element={<BRidgeKepabeanan />} />
+           <Route path="/bridge/kepabeanan/inbound" element={<InboundReport />} />
+           <Route path="/bridge/kepabeanan/outbound" element={<OutboundReport />} />
+           <Route path="/bridge/kepabeanan/wip" element={<WipReport />} />
+           <Route path="/bridge/kepabeanan/mutasi_bahan" element={<MutasiBahanReport />} />
+           <Route path="/bridge/kepabeanan/mutasi_produk" element={<MutasiProdukReport />} />
+           <Route path="/bridge/kepabeanan/mutasi_asset" element={<MutasiAssetReport />} />
+           <Route path="/bridge/kepabeanan/reject" element={<RejectReport />} />
            
            {/* BIG Module Routes */}
            <Route path="/big" element={<BIGDashboard />} />

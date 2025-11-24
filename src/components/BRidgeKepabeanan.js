@@ -1,53 +1,52 @@
-import React, { useState } from 'react';
-import InboundReport from './kepabeanan/InboundReport';
-import OutboundReport from './kepabeanan/OutboundReport';
-import WipReport from './kepabeanan/WipReport';
-import MutasiBahanReport from './kepabeanan/MutasiBahanReport';
-import MutasiProdukReport from './kepabeanan/MutasiProdukReport';
-import MutasiAssetReport from './kepabeanan/MutasiAssetReport';
-import RejectReport from './kepabeanan/RejectReport';
-
-const TABS = [
-  { key: 'inbound', label: 'Laporan Pemasukan Barang', comp: InboundReport },
-  { key: 'outbound', label: 'Laporan Pengeluaran Barang', comp: OutboundReport },
-  { key: 'wip', label: 'Laporan Posisi WIP', comp: WipReport },
-  { key: 'mutasi_bahan', label: 'Laporan Pertanggungjawaban Mutasi Bahan Baku', comp: MutasiBahanReport },
-  { key: 'mutasi_produk', label: 'Laporan Mutasi Barang jadi', comp: MutasiProdukReport },
-  { key: 'mutasi_asset', label: 'Laporan Mutasi Mesin dan Peralatan', comp: MutasiAssetReport },
-  { key: 'reject', label: 'Laporan Pertanggungjawaban Barang Reject/ Scrap', comp: RejectReport },
-];
+import React from 'react';
+import { Box, Typography, Paper } from '@mui/material';
+import BRidgeKepabeananLayout from './BRidgeKepabeananLayout';
 
 export default function BRidgeKepabeanan() {
-  const [active, setActive] = useState(TABS[0].key);
-  const ActiveComp = TABS.find((t) => t.key === active).comp;
-
   return (
-    <div className="bridge-kepabeanan" style={{ padding: 16 }}>
-      <h2>Kepabeanan</h2>
+    <BRidgeKepabeananLayout
+      title="Portal Kepabeanan"
+      subtitle="Pusat Kontrol Laporan dan Peraturan Kepabeanan"
+      breadcrumbs={['Portal Kepabeanan']}
+    >
+      <Paper elevation={1} sx={{ p: 4, backgroundColor: 'white', textAlign: 'center' }}>
+        <Box sx={{ maxWidth: 600, mx: 'auto' }}>
+          <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold', color: '#667eea' }}>
+            Selamat Datang di Portal Kepabeanan
+          </Typography>
+          <Typography variant="body1" color="textSecondary" sx={{ mb: 3, lineHeight: 1.7 }}>
+            Pilih salah satu laporan dari menu samping untuk memulai:
+          </Typography>
+          
+          <Box sx={{ textAlign: 'left', backgroundColor: '#f5f5f5', p: 2.5, borderRadius: 1, mb: 2 }}>
+            <Typography variant="body2" sx={{ mb: 1.5 }}>
+              <strong>📋 Laporan Pemasukan Barang</strong> - Lihat detail penerimaan barang ke gudang
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1.5 }}>
+              <strong>📤 Laporan Pengeluaran Barang</strong> - Pantau pergerakan barang keluar dari gudang
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1.5 }}>
+              <strong>🏢 Laporan Posisi WIP</strong> - Lihat posisi barang dalam proses (Work In Progress)
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1.5 }}>
+              <strong>📊 Laporan Mutasi Bahan Baku</strong> - Agregasi lengkap pergerakan bahan baku dengan saldo dan selisih
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1.5 }}>
+              <strong>✅ Laporan Mutasi Barang Jadi</strong> - Laporan barang produk selesai
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1.5 }}>
+              <strong>⚙️ Laporan Mutasi Mesin & Peralatan</strong> - Tracking aset tetap dan peralatan
+            </Typography>
+            <Typography variant="body2">
+              <strong>⛔ Laporan Barang Reject/Scrap</strong> - Catatan barang cacat dan disposition-nya
+            </Typography>
+          </Box>
 
-      <nav style={{ marginBottom: 12 }}>
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setActive(t.key)}
-            style={{
-              marginRight: 8,
-              padding: '6px 12px',
-              background: active === t.key ? '#1976d2' : '#efefef',
-              color: active === t.key ? '#fff' : '#000',
-              border: 'none',
-              borderRadius: 4,
-              cursor: 'pointer',
-            }}
-          >
-            {t.label}
-          </button>
-        ))}
-      </nav>
-
-      <div style={{ border: '1px solid #ddd', borderRadius: 6, padding: 12 }}>
-        <ActiveComp />
-      </div>
-    </div>
+          <Typography variant="caption" color="textSecondary" sx={{ display: 'block', mt: 3 }}>
+            💡 Gunakan menu di sidebar untuk navigasi antar laporan dan filter untuk melihat data spesifik.
+          </Typography>
+        </Box>
+      </Paper>
+    </BRidgeKepabeananLayout>
   );
 }
