@@ -89,7 +89,13 @@ const BridgeInventoryManagement = ({ onNotification }) => {
     shippingStatus: 'Event',
     description: '',
     customsStatus: 'Import',
-    relatedDocuments: []
+    relatedDocuments: [],
+    aju_number: '',
+    aju_date: '',
+    golongan: 'barang masuk',
+    masuk_warehouse_date: '',
+    event_date: '',
+    re_export_date: ''
   });
 
   const [itemsList, setItemsList] = useState([]);
@@ -384,7 +390,8 @@ const BridgeInventoryManagement = ({ onNotification }) => {
     try {
       setLoading(true);
 
-      if (!formData.awb || !formData.bl || !formData.item || !formData.consignee) {
+      // AWB & BL are now optional; only item and consignee are required
+      if (!formData.item || !formData.consignee) {
         setLoading(false);
         return;
       }
@@ -406,12 +413,12 @@ const BridgeInventoryManagement = ({ onNotification }) => {
         /* ignore duplicate item */ 
       }
 
-      // Create movement record
+      // Create movement record with new fields
       await createMovement({
         doc_type: formData.bcInputType || 'BRIDGE',
-        doc_number: formData.bl || '',
+        doc_number: formData.bl || `AUTO-${Date.now()}`,
         doc_date: formData.warehouseEntryDate || new Date().toISOString().slice(0, 10),
-        receipt_number: formData.awb || '',
+        receipt_number: formData.awb || `AUTO-AWB-${Date.now()}`,
         receipt_date: formData.warehouseEntryDate || null,
         sender_name: formData.consignee || '',
         item_code,
@@ -422,7 +429,13 @@ const BridgeInventoryManagement = ({ onNotification }) => {
         value_currency: 'IDR',
         movement_type: 'IN',
         source: 'BRIDGE',
-        note: formData.description || ''
+        note: formData.description || '',
+        aju_number: formData.aju_number || '',
+        aju_date: formData.aju_date || '',
+        golongan: formData.golongan || 'barang masuk',
+        masuk_warehouse_date: formData.masuk_warehouse_date || '',
+        event_date: formData.event_date || '',
+        re_export_date: formData.re_export_date || ''
       });
 
       // Reload data from API
@@ -467,7 +480,13 @@ const BridgeInventoryManagement = ({ onNotification }) => {
         shippingStatus: 'Event',
         description: '',
         customsStatus: 'Import',
-        relatedDocuments: []
+        relatedDocuments: [],
+        aju_number: '',
+        aju_date: '',
+        golongan: 'barang masuk',
+        masuk_warehouse_date: '',
+        event_date: '',
+        re_export_date: ''
       });
     }
     setDialogOpen(true);
@@ -652,6 +671,12 @@ const BridgeInventoryManagement = ({ onNotification }) => {
               <TableCell sx={{ color: 'white', fontWeight: 'bold', py: 2 }}>
                 <Typography variant="subtitle2" sx={{ color: 'inherit', fontWeight: 'bold' }}>Status Cukai</Typography>
               </TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold', py: 2 }}>
+                <Typography variant="subtitle2" sx={{ color: 'inherit', fontWeight: 'bold' }}>AJU / Golongan</Typography>
+              </TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold', py: 2 }}>
+                <Typography variant="subtitle2" sx={{ color: 'inherit', fontWeight: 'bold' }}>Tgl Masuk / Event</Typography>
+              </TableCell>
               <TableCell align="right" sx={{ color: 'white', fontWeight: 'bold', py: 2 }}>
                 <Typography variant="subtitle2" sx={{ color: 'inherit', fontWeight: 'bold' }}>Actions</Typography>
               </TableCell>
@@ -737,6 +762,14 @@ const BridgeInventoryManagement = ({ onNotification }) => {
                     color={item.customsStatus === 'Import' ? 'success' : 'warning'}
                     size="small"
                   />
+                </TableCell>
+                <TableCell sx={{ py: 2 }}>
+                  <Typography variant="body2">{item.aju_number || '-'}</Typography>
+                  <Typography variant="caption" color="textSecondary">{item.golongan || '-'}</Typography>
+                </TableCell>
+                <TableCell sx={{ py: 2 }}>
+                  <Typography variant="caption">{item.masuk_warehouse_date ? new Date(item.masuk_warehouse_date).toLocaleDateString('id-ID') : '-'}</Typography>
+                  <Typography variant="caption" color="textSecondary">{item.event_date ? new Date(item.event_date).toLocaleDateString('id-ID') : '-'}</Typography>
                 </TableCell>
                 <TableCell align="right" sx={{ py: 2 }}>
                   <IconButton
@@ -934,6 +967,77 @@ const BridgeInventoryManagement = ({ onNotification }) => {
                 value={formData.description}
                 onChange={handleInputChange('description')}
                 placeholder="Keterangan detail barang"
+              />
+            </Grid>
+
+            {/* New AJU Fields */}
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Nomor AJU"
+                value={formData.aju_number}
+                onChange={handleInputChange('aju_number')}
+                placeholder="e.g., 123456/AJU/2025"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Tanggal AJU"
+                type="date"
+                value={formData.aju_date}
+                onChange={handleInputChange('aju_date')}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            {/* Golongan Dropdown */}
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth>
+                <InputLabel>Golongan</InputLabel>
+                <Select
+                  value={formData.golongan}
+                  onChange={handleInputChange('golongan')}
+                  label="Golongan"
+                >
+                  <MenuItem value="barang masuk">Barang Masuk</MenuItem>
+                  <MenuItem value="barang keluar">Barang Keluar</MenuItem>
+                  <MenuItem value="bahan baku">Bahan Baku</MenuItem>
+                  <MenuItem value="barang jadi">Barang Jadi</MenuItem>
+                  <MenuItem value="mesin">Mesin</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            {/* Status-specific Date Fields */}
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Tanggal Masuk Warehouse"
+                type="date"
+                value={formData.masuk_warehouse_date}
+                onChange={handleInputChange('masuk_warehouse_date')}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Tanggal Event"
+                type="date"
+                value={formData.event_date}
+                onChange={handleInputChange('event_date')}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Tanggal Re-Export"
+                type="date"
+                value={formData.re_export_date}
+                onChange={handleInputChange('re_export_date')}
+                InputLabelProps={{ shrink: true }}
               />
             </Grid>
           </Grid>

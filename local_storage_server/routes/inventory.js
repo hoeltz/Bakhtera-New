@@ -399,6 +399,12 @@ router.post('/inventory/movements', (req, res) => {
       approved_by: it.approved_by || base.approved_by || null,
       approval_status: it.approval_status || base.approval_status || 'pending',
       note: it.note || base.note || '',
+        aju_number: it.aju_number || base.aju_number || '',
+        aju_date: it.aju_date || base.aju_date || '',
+        golongan: it.golongan || base.golongan || 'barang masuk',
+        masuk_warehouse_date: it.masuk_warehouse_date || base.masuk_warehouse_date || '',
+        event_date: it.event_date || base.event_date || '',
+        re_export_date: it.re_export_date || base.re_export_date || '',
       createdAt: now,
       updatedAt: now
     };
