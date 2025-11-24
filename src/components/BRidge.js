@@ -35,11 +35,10 @@ import {
 
 // Import BRidge modules
 import BRidgeCustomerManagement from './BRidgeCustomerManagement';
-import BRidgeVendorManagement from './BRidgeVendorManagement';
 import BRidgeInventoryManagement from './BRidgeInventoryManagement';
 import WarehouseManagement from './WarehouseManagement';
 import BRidgeAccountingLedger from './BRidgeAccountingLedger';
-import BRidgeCustomsPortal from './BRidgeCustomsPortal';
+import BRidgeKepabeanan from './BRidgeKepabeanan';
 import BridgeHeader from './BridgeHeader';
 import BridgeStatCard from './BridgeStatCard';
 
@@ -51,7 +50,6 @@ import notificationService from '../services/notificationService';
 const BRidgeDashboard = ({ onNavigateToTab }) => {
   const [kpis, setKpis] = useState({
     totalCustomers: 0,
-    totalVendors: 0,
     activeInventory: 0,
     pendingInvoices: 0,
     totalRevenue: 0,
@@ -65,12 +63,10 @@ const BRidgeDashboard = ({ onNavigateToTab }) => {
       try {
         // Load data from all B-ridge modules
         const customerData = dataSyncService.getCustomerData();
-        const vendorData = dataSyncService.getVendorData();
         
         // For demo purposes, calculate KPIs
         setKpis({
           totalCustomers: customerData?.length || 0,
-          totalVendors: vendorData?.length || 0,
           activeInventory: 150, // This would come from inventory module
           pendingInvoices: 12, // This would come from invoicing module
           totalRevenue: 125000000, // This would come from accounting module
@@ -93,14 +89,6 @@ const BRidgeDashboard = ({ onNavigateToTab }) => {
       icon: <PeopleIcon />,
       color: 'primary',
       change: '+5.2%',
-      changeType: 'positive'
-    },
-    {
-      title: 'Total Vendors',
-      value: kpis.totalVendors,
-      icon: <BusinessIcon />,
-      color: 'success',
-      change: '+2.1%',
       changeType: 'positive'
     },
     {
@@ -143,7 +131,7 @@ const BRidgeDashboard = ({ onNavigateToTab }) => {
       <BridgeHeader title="B-ridge Dashboard" subtitle="Integrated platform for BRiDGE modules" />
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        <strong>B-ridge Integrated Platform:</strong> Comprehensive management system for customers, vendors, 
+        <strong>B-ridge Integrated Platform:</strong> Comprehensive management system for customers, 
         inventory, invoicing, accounting, and customs operations. All modules are interconnected for seamless data flow.
       </Alert>
 
@@ -184,11 +172,10 @@ const BRidge = () => {
 
   const tabLabels = [
     { label: 'Customer Management', icon: <PeopleIcon /> },
-    { label: 'Vendor Management', icon: <BusinessIcon /> },
     { label: 'Warehouse Management', icon: <ShippingIcon /> },
     { label: 'Inventory Management', icon: <InventoryIcon /> },
     { label: 'Accounting', icon: <AccountIcon /> },
-    { label: 'Bea Cukai Portal', icon: <SecurityIcon /> }
+    { label: 'Kepabeanan', icon: <SecurityIcon /> }
   ];
 
   return (
@@ -239,11 +226,10 @@ const BRidge = () => {
 
       <Box sx={{ minHeight: '600px' }}>
         {activeTab === 0 && <BRidgeCustomerManagement onNotification={handleNotification} />}
-        {activeTab === 1 && <BRidgeVendorManagement onNotification={handleNotification} />}
-        {activeTab === 2 && <WarehouseManagement />}
-        {activeTab === 3 && <BRidgeInventoryManagement onNotification={handleNotification} />}
-        {activeTab === 4 && <BRidgeAccountingLedger onNotification={handleNotification} />}
-        {activeTab === 5 && <BRidgeCustomsPortal onNotification={handleNotification} />}
+        {activeTab === 1 && <WarehouseManagement />}
+        {activeTab === 2 && <BRidgeInventoryManagement onNotification={handleNotification} />}
+        {activeTab === 3 && <BRidgeAccountingLedger onNotification={handleNotification} />}
+        {activeTab === 4 && <BRidgeKepabeanan onNotification={handleNotification} />}
       </Box>
     </Box>
   );

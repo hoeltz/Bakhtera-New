@@ -15,7 +15,6 @@ const STORAGE_KEYS = {
   // BRIDGE Module
   BRIDGE: {
     CUSTOMERS: 'bridge_customers',
-    VENDORS: 'bridge_vendors',
     SALES_ORDERS: 'bridge_sales_orders',
     WAREHOUSE_DATA: 'bridge_warehouse_data',
     ACCOUNTING_LEDGER: 'bridge_accounting_ledger',
@@ -175,8 +174,6 @@ const enhancedDataSyncService = {
         return safeStorage.get(STORAGE_KEYS.BRIDGE.CUSTOMERS) || [];
       case 'salesOrders':
         return safeStorage.get(STORAGE_KEYS.BRIDGE.SALES_ORDERS) || [];
-      case 'vendors':
-        return safeStorage.get(STORAGE_KEYS.BRIDGE.VENDORS) || [];
       case 'warehouse':
         return safeStorage.get(STORAGE_KEYS.BRIDGE.WAREHOUSE_DATA) || {};
       case 'accounting':
@@ -231,8 +228,6 @@ const enhancedDataSyncService = {
         return safeStorage.set(STORAGE_KEYS.BRIDGE.CUSTOMERS, data);
       case 'salesOrders':
         return safeStorage.set(STORAGE_KEYS.BRIDGE.SALES_ORDERS, data);
-      case 'vendors':
-        return safeStorage.set(STORAGE_KEYS.BRIDGE.VENDORS, data);
       case 'warehouse':
         return safeStorage.set(STORAGE_KEYS.BRIDGE.WAREHOUSE_DATA, data);
       case 'accounting':

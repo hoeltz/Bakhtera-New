@@ -1,0 +1,24 @@
+[
+  {
+    "id":"INV-TEST-001",
+    "awb":"AWB-TEST-001",
+    "bl":"BL-TEST-001",
+    "warehouseEntryDate":"2025-11-20",
+    "bcInputType":"BC 2.5",
+    "item":"ABC-001 - Bahan X",
+    "quantity":10,
+    "consignee":"PT. Test Co",
+    "description":"Migrated sample 1"
+  },
+  {
+    "id":"INV-TEST-002",
+    "awb":"AWB-TEST-002",
+    "bl":"BL-TEST-002",
+    "warehouseEntryDate":"2025-11-21",
+    "bcInputType":"BC 2.6.1",
+    "item":"GHI-200 - Bahan Z",
+    "quantity":5,
+    "consignee":"PT. Test Co 2",
+    "description":"Migrated sample 2"
+  }
+]

@@ -1,13 +1,9 @@
 // Basic data sync service (replacement for deleted dataSync)
-import { customerService, vendorService, cargoService, shipmentService, operationalCostService, sellingCostService, hsCodeService } from './localStorage';
+import { customerService, cargoService, shipmentService, operationalCostService, sellingCostService, hsCodeService } from './localStorage';
 
 // Mock data for development
 const mockCustomers = [
   { id: '1', name: 'PT Example Corp', type: 'Corporation', email: 'contact@example.com', phone: '08123456789' }
-];
-
-const mockVendors = [
-  { id: '1', name: 'PT Logistics Provider', serviceType: 'Sea Freight', email: 'info@logistics.com' }
 ];
 
 const mockHSCodes = [
@@ -201,16 +197,6 @@ const dataSyncService = {
     }
   },
 
-  // Vendor operations
-  getVendors: async () => {
-    try {
-      return vendorService.getAll() || mockVendors;
-    } catch (error) {
-      console.error('Error getting vendors:', error);
-      return mockVendors;
-    }
-  },
-
   // B-ridge Customer operations
   getCustomerData: () => {
     try {
@@ -232,31 +218,6 @@ const dataSyncService = {
       return true;
     } catch (error) {
       console.error('Error setting customer data:', error);
-      return false;
-    }
-  },
-
-  // B-ridge Vendor operations
-  getVendorData: () => {
-    try {
-      const data = localStorage.getItem('bridgeVendorData');
-      if (data) {
-        return JSON.parse(data);
-      }
-      // If no data exists, return empty (seeding happens in component)
-      return [];
-    } catch (error) {
-      console.error('Error getting vendor data:', error);
-      return [];
-    }
-  },
-
-  setVendorData: (vendors) => {
-    try {
-      localStorage.setItem('bridgeVendorData', JSON.stringify(vendors));
-      return true;
-    } catch (error) {
-      console.error('Error setting vendor data:', error);
       return false;
     }
   },

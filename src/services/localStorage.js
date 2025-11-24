@@ -6,7 +6,6 @@ const STORAGE_KEYS = {
   SHIPMENTS: 'freightflow_shipments',
   OPERATIONAL_COSTS: 'freightflow_operational_costs',
   SELLING_COSTS: 'freightflow_selling_costs',
-  VENDORS: 'freightflow_vendors',
   INVOICES: 'freightflow_invoices',
   HS_CODES: 'freightflow_hs_codes',
   USERS: 'freightflow_users',
@@ -582,202 +581,6 @@ export const sellingCostService = {
   },
 };
 
-// Vendor Management - Enhanced
-export const vendorService = {
-  getAll: () => getFromStorage(STORAGE_KEYS.VENDORS),
-
-  getById: (id) => {
-    if (!id) return null;
-    const vendors = getFromStorage(STORAGE_KEYS.VENDORS);
-    return vendors.find(vendor => vendor.id === id) || null;
-  },
-
-  create: (vendor) => {
-    try {
-      // Validate required fields
-      validateRequired(vendor.name, 'Vendor name');
-      validateRequired(vendor.type, 'Vendor type');
-      validateRequired(vendor.serviceType, 'Service type');
-      validateRequired(vendor.contactPerson, 'Contact person');
-
-      // Validate email format if provided
-      if (vendor.email && !validateEmail(vendor.email)) {
-        throw new Error('Invalid email format');
-      }
-
-      // Validate phone format if provided
-      if (vendor.phone && !validatePhone(vendor.phone)) {
-        throw new Error('Invalid phone number format');
-      }
-
-      const vendors = getFromStorage(STORAGE_KEYS.VENDORS);
-
-      // Generate vendor code
-      const vendorCode = `VENDOR-${Date.now()}`;
-
-      const newVendor = {
-        id: Date.now().toString(),
-        vendorCode,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        status: 'Active',
-        // Basic Information
-        name: vendor.name.trim(),
-        type: vendor.type,
-        registrationNumber: vendor.registrationNumber || '',
-        taxId: vendor.taxId || '',
-        licenseNumber: vendor.licenseNumber || '',
-        establishedDate: vendor.establishedDate || '',
-        companySize: vendor.companySize || 'Medium',
-        website: vendor.website || '',
-        // Contact Information
-        contactPerson: vendor.contactPerson.trim(),
-        position: vendor.position || '',
-        phone: vendor.phone?.trim() || '',
-        email: vendor.email?.toLowerCase().trim() || '',
-        // Service Information
-        serviceType: vendor.serviceType,
-        serviceAreas: vendor.serviceAreas || [],
-        equipment: vendor.equipment || [],
-        capacity: vendor.capacity || {},
-        // Business Information
-        paymentTerms: vendor.paymentTerms || 'Net 30',
-        creditLimit: vendor.creditLimit || 0,
-        currency: vendor.currency || 'IDR',
-        // Performance & Compliance
-        rating: vendor.rating || 3,
-        certifications: vendor.certifications || [],
-        insurance: vendor.insurance || {},
-        compliance: vendor.compliance || {},
-        // Contract Information
-        contracts: vendor.contracts || [],
-        // System Information
-        notes: vendor.notes || '',
-        tags: vendor.tags || [],
-        ...vendor,
-      };
-
-      vendors.push(newVendor);
-      return saveToStorage(STORAGE_KEYS.VENDORS, vendors) ? newVendor : null;
-    } catch (error) {
-      console.error('Error creating vendor:', error.message);
-      throw error;
-    }
-  },
-
-  update: (id, vendor) => {
-    try {
-      if (!id) throw new Error('Vendor ID is required');
-
-      const vendors = getFromStorage(STORAGE_KEYS.VENDORS);
-      const index = vendors.findIndex(v => v.id === id);
-
-      if (index === -1) {
-        throw new Error('Vendor not found');
-      }
-
-      // Validate email format if provided
-      if (vendor.email && !validateEmail(vendor.email)) {
-        throw new Error('Invalid email format');
-      }
-
-      // Validate phone format if provided
-      if (vendor.phone && !validatePhone(vendor.phone)) {
-        throw new Error('Invalid phone number format');
-      }
-
-      const updatedVendor = {
-        ...vendors[index],
-        ...vendor,
-        id,
-        vendorCode: vendors[index].vendorCode, // Preserve vendor code
-        updatedAt: new Date().toISOString(),
-        name: vendor.name ? vendor.name.trim() : vendors[index].name,
-        contactPerson: vendor.contactPerson ? vendor.contactPerson.trim() : vendors[index].contactPerson,
-        email: vendor.email ? vendor.email.toLowerCase().trim() : vendors[index].email,
-        phone: vendor.phone ? vendor.phone.trim() : vendors[index].phone,
-      };
-
-      vendors[index] = updatedVendor;
-      return saveToStorage(STORAGE_KEYS.VENDORS, vendors) ? updatedVendor : null;
-    } catch (error) {
-      console.error('Error updating vendor:', error.message);
-      throw error;
-    }
-  },
-
-  delete: (id) => {
-    try {
-      if (!id) throw new Error('Vendor ID is required');
-
-      // Check for related records before deletion
-      const salesOrders = getFromStorage(STORAGE_KEYS.SALES_ORDERS);
-      const relatedOrders = salesOrders.filter(order => order.vendorId === id);
-
-      if (relatedOrders.length > 0) {
-        throw new Error(`Cannot delete vendor with ${relatedOrders.length} associated sales orders`);
-      }
-
-      const vendors = getFromStorage(STORAGE_KEYS.VENDORS);
-      const vendorExists = vendors.some(v => v.id === id);
-
-      if (!vendorExists) {
-        throw new Error('Vendor not found');
-      }
-
-      const filteredVendors = vendors.filter(v => v.id !== id);
-      return saveToStorage(STORAGE_KEYS.VENDORS, filteredVendors);
-    } catch (error) {
-      console.error('Error deleting vendor:', error.message);
-      throw error;
-    }
-  },
-
-  // Enhanced vendor methods
-  getByServiceType: (serviceType) => {
-    const vendors = getFromStorage(STORAGE_KEYS.VENDORS);
-    return vendors.filter(vendor => vendor.serviceType === serviceType && vendor.status === 'Active');
-  },
-
-  getByRating: (minRating = 0) => {
-    const vendors = getFromStorage(STORAGE_KEYS.VENDORS);
-    return vendors.filter(vendor => vendor.rating >= minRating && vendor.status === 'Active');
-  },
-
-  updateRating: (id, newRating) => {
-    const vendors = getFromStorage(STORAGE_KEYS.VENDORS);
-    const index = vendors.findIndex(v => v.id === id);
-
-    if (index !== -1) {
-      vendors[index].rating = newRating;
-      vendors[index].lastRatingUpdate = new Date().toISOString();
-      return saveToStorage(STORAGE_KEYS.VENDORS, vendors) ? vendors[index] : null;
-    }
-    return null;
-  },
-
-  getPerformanceMetrics: (id) => {
-    // Get performance data from related records
-    const salesOrders = getFromStorage(STORAGE_KEYS.SALES_ORDERS);
-    const operationalCosts = getFromStorage(STORAGE_KEYS.OPERATIONAL_COSTS);
-
-    const vendorOrders = salesOrders.filter(order => order.vendorId === id);
-    const vendorCosts = operationalCosts.filter(cost => cost.vendorId === id);
-
-    return {
-      totalOrders: vendorOrders.length,
-      totalCosts: vendorCosts.length,
-      totalCostValue: vendorCosts.reduce((sum, cost) => sum + cost.amount, 0),
-      averageOrderValue: vendorOrders.length > 0
-        ? vendorOrders.reduce((sum, order) => sum + (order.sellingPrice || 0), 0) / vendorOrders.length
-        : 0,
-      lastActivity: vendorOrders.length > 0
-        ? Math.max(...vendorOrders.map(order => new Date(order.createdAt)))
-        : null
-    };
-  }
-};
-
 // Invoice Management
 export const invoiceService = {
   getAll: () => getFromStorage(STORAGE_KEYS.INVOICES),
@@ -1163,70 +966,6 @@ export const initializeSampleData = () => {
     paymentTerms: 'Net 30',
   });
 
-  // Create 1 sample vendor with comprehensive information
-  const sampleVendor = vendorService.create({
-    name: 'PT. Samudera Logistics',
-    type: 'PT',
-    registrationNumber: '9123456789012345',
-    taxId: '01.234.567.8-901.000',
-    licenseNumber: 'SIUP/123456789',
-    establishedDate: '2010-05-15',
-    companySize: 'Large',
-    website: 'www.samudera-logistics.co.id',
-    email: 'ops@samudera.co.id',
-    phone: '+62-21-555-0789',
-    address: 'Jl. Merdeka No. 789, Tanjung Priok, Jakarta',
-    billingAddress: 'Jl. Merdeka No. 789, Tanjung Priok, Jakarta',
-    serviceType: 'Sea Freight',
-    contactPerson: 'Captain Hendro Wijaya',
-    position: 'Operations Director',
-    paymentTerms: 'Net 30',
-    creditLimit: 500000000,
-    currency: 'IDR',
-    rating: 4.5,
-    serviceAreas: ['Asia Pacific', 'Europe', 'America', 'Australia'],
-    equipment: [
-      'Container 20ft (500 units)',
-      'Container 40ft (300 units)',
-      'Reefer Container (50 units)',
-      'Heavy Lift Equipment'
-    ],
-    capacity: {
-      teu: 15000,
-      containers: 800,
-      tonnage: 500000
-    },
-    certifications: [
-      'ISO 9001:2015',
-      'IMO Certified',
-      'IATA Dangerous Goods',
-      'AEO Certified',
-      'OHSAS 18001'
-    ],
-    insurance: {
-      publicLiability: 'IDR 10,000,000,000',
-      cargoInsurance: 'IDR 50,000,000,000',
-      professionalIndemnity: 'IDR 5,000,000,000'
-    },
-    compliance: {
-      businessLicense: 'Active',
-      safetyCertification: 'Valid until 2025',
-      environmentalCompliance: 'Compliant'
-    },
-    contracts: [
-      {
-        contractNumber: 'SL-2024-001',
-        type: 'Annual',
-        startDate: '2024-01-01',
-        endDate: '2024-12-31',
-        value: 5000000000,
-        currency: 'IDR'
-      }
-    ],
-    notes: 'Premier shipping line with extensive network covering major global routes',
-    tags: ['Premium', 'Global', 'Reliable', 'ISO Certified']
-  });
-
   // Create 1 sample sales order with operational costs
   const sampleSalesOrder = salesOrderService.create({
     customerId: sampleCustomer.id,
@@ -1244,8 +983,6 @@ export const initializeSampleData = () => {
     estimatedCost: 8500000,
     sellingPrice: 12000000,
     margin: 3500000,
-    vendorId: sampleVendor.id,
-    vendorName: sampleVendor.name,
     priority: 'Normal',
     specialInstructions: 'Handle with care - fragile electronics',
     status: 'Draft', // Start as Draft, will be confirmed by user
@@ -1290,7 +1027,6 @@ export const initializeSampleData = () => {
       currency: 'IDR',
       status: 'Paid',
       salesOrderId: sampleSalesOrder.id,
-      vendorId: sampleVendor.id,
       invoiceNumber: 'SAM-2024-001',
       dueDate: '2024-02-15'
     });
@@ -1859,7 +1595,6 @@ export const initializeSampleData = () => {
   console.log('🎯 Sample data initialization completed with proper flow:');
   console.log('   📦 Sales Order:', sampleSalesOrder?.orderNumber);
   console.log('   👥 Customer:', sampleCustomer.name);
-  console.log('   🚛 Vendor:', sampleVendor.name);
   console.log('   💰 Operational Costs: 5 items linked to sales order');
   console.log('   🧾 Invoice: Generated from sales order');
     } catch (error) {
@@ -1890,7 +1625,6 @@ export default {
   shipmentService,
   operationalCostService,
   sellingCostService,
-  vendorService,
   invoiceService,
   hsCodeService,
   initializeSampleData,

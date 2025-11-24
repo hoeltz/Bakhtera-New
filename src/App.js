@@ -141,12 +141,12 @@ import BRidgeDashboard from './components/BRidgeDashboard';
 import BLINKDashboard from './components/BLINKDashboard';
 import BIGDashboard from './components/BIGDashboard';
 import BRidgeCustomerManagement from './components/BRidgeCustomerManagement';
-import BRidgeVendorManagement from './components/BRidgeVendorManagement';
 import BRidgeInventoryManagement from './components/BRidgeInventoryManagement';
 import BRidgeAccountingLedger from './components/BRidgeAccountingLedger';
 import CustomsPortalMenuDemo from './components/CustomsPortalMenuDemo';
 
 import BRidgeCustomsPortal from './components/BRidgeCustomsPortal';
+import BRidgeKepabeanan from './components/BRidgeKepabeanan';
 import WarehouseManagement from './components/WarehouseManagement';
 import InventoryManagement from './components/InventoryManagement';
 import SalesOrderManagement from './components/SalesOrderManagement';
@@ -163,13 +163,12 @@ const menuItems = [
   // BRiDGE - Warehouse Management Suite (FREIGHT FORWARDING CORE MODULE)
   { text: 'BridGe - Warehouse Management', icon: <InventoryIcon />, path: '/bridge', category: 'bridge', isParent: true },
   { text: 'Customer Management', icon: <PeopleIcon />, path: '/bridge/customer', category: 'bridge' },
-  { text: 'Vendor Management', icon: <BusinessIcon />, path: '/bridge/vendor', category: 'bridge' },
   { text: 'Warehouse Management', icon: <InventoryIcon />, path: '/bridge/warehouse', category: 'bridge' },
   { text: 'Inventory Management', icon: <CategoryIcon />, path: '/bridge/inventory', category: 'bridge' },
   { text: 'Quotation Management', icon: <MoneyIcon />, path: '/bridge/quotation', category: 'bridge' },
   { text: 'Sales Order Management', icon: <AssignmentIcon />, path: '/bridge/enhanced-sales-order', category: 'bridge' },
   { text: 'Accounting Ledger', icon: <AccountBalanceIcon />, path: '/bridge/accounting', category: 'bridge' },
-  { text: 'Customs Portal', icon: <WarningIcon />, path: '/bridge/customs-portal', category: 'bridge' },
+  { text: 'Kepabeanan', icon: <WarningIcon />, path: '/bridge/kepabeanan', category: 'bridge' },
 
   // BLiNK - Freight & Forwarder (OPERATIONS MODULE)
   { text: 'BlinK - Freight & Forward Management', icon: <TrendingUpIcon />, path: '/blink', category: 'blink', isParent: true },
@@ -401,7 +400,6 @@ function App() {
            {/* BLINK Module Routes */}
            <Route path="/blink" element={<BLINKDashboard />} />
            <Route path="/blink/customer" element={<BRidgeCustomerManagement />} />
-           <Route path="/blink/vendor" element={<BRidgeVendorManagement />} />
            <Route path="/blink/quotation" element={<QuotationApproval />} />
            <Route path="/blink/enhanced-sales-order" element={<SalesOrderManagementApproval />} />
            <Route path="/blink/operation" element={<ShippingManagement />} />
@@ -419,13 +417,11 @@ function App() {
            <Route path="/bridge/customs-menu-demo" element={<CustomsPortalMenuDemo />} />
 
            <Route path="/bridge/accounting" element={<BRidgeAccountingLedger />} />
-           <Route path="/bridge/customs-portal" element={<BRidgeCustomsPortal />} />
-           <Route path="/bridge/bea-cukai-portal" element={<BRidgeCustomsPortal />} />
+           <Route path="/bridge/kepabeanan" element={<BRidgeKepabeanan />} />
            
            {/* BIG Module Routes */}
            <Route path="/big" element={<BIGDashboard />} />
            <Route path="/big/customer" element={<BRidgeCustomerManagement />} />
-           <Route path="/big/vendor" element={<BRidgeVendorManagement />} />
            <Route path="/big/quotation" element={<QuotationApproval />} />
            <Route path="/big/enhanced-sales-order" element={<SalesOrderManagementApproval />} />
            <Route path="/big/accounting" element={<BRidgeAccountingLedger />} />

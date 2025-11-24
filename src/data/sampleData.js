@@ -56,57 +56,6 @@ export const sampleCustomers = [
   },
 ];
 
-export const sampleVendors = [
-  {
-    id: '1',
-    name: 'PT. Samudera Logistics',
-    type: 'Shipping Company',
-    email: 'ops@samudera.co.id',
-    phone: '+62-21-555-0789',
-    address: 'Jl. Merdeka No. 789, Tanjung Priok, Jakarta',
-    serviceType: 'Sea Freight',
-    rating: 4.5,
-    contactPerson: 'Captain Hendro',
-    paymentTerms: 'Net 30',
-    serviceAreas: ['Asia Pacific', 'Europe', 'America'],
-    certifications: ['ISO 9001', 'IMO Certified'],
-    notes: 'Premier shipping line with extensive network',
-    createdAt: '2024-01-10T08:00:00Z',
-  },
-  {
-    id: '2',
-    name: 'PT. Garuda Cargo Express',
-    type: 'Air Freight',
-    email: 'contact@garudacargo.com',
-    phone: '+62-21-555-0321',
-    address: 'Jl. Airport No. 321, Cengkareng, Jakarta',
-    serviceType: 'Air Freight',
-    rating: 4.2,
-    contactPerson: 'Maya Sari',
-    paymentTerms: 'Net 15',
-    serviceAreas: ['Domestic', 'Asia Pacific'],
-    certifications: ['IATA Certified', 'ISO 9001'],
-    notes: 'Fast and reliable air cargo services',
-    createdAt: '2024-01-12T10:30:00Z',
-  },
-  {
-    id: '3',
-    name: 'PT. Darat Express',
-    type: 'Land Transportation',
-    email: 'info@darat-express.co.id',
-    phone: '+62-21-555-0654',
-    address: 'Jl. Raya Bekasi No. 654, Bekasi',
-    serviceType: 'Trucking',
-    rating: 4.0,
-    contactPerson: 'Bambang Wijaya',
-    paymentTerms: 'COD',
-    serviceAreas: ['Java', 'Sumatra'],
-    certifications: ['Truck Safety Certified'],
-    notes: 'Reliable trucking services across Java and Sumatra',
-    createdAt: '2024-01-15T13:45:00Z',
-  },
-];
-
 export const sampleSalesOrders = [
   {
     id: '1',
@@ -360,7 +309,6 @@ export const dashboardStats = {
 
 export default {
   sampleCustomers,
-  sampleVendors,
   sampleSalesOrders,
   sampleCargo,
   sampleOperationalCosts,
