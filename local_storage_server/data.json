@@ -755,5 +755,50 @@
       "createdAt": "2025-11-18T05:46:09.468Z",
       "updatedAt": "2025-11-18T05:46:09.468Z"
     }
+  ],
+  "movements": [
+    {
+      "id": "db873f9c-709c-4217-9b17-6221ecab9fe0",
+      "doc_type": "BRIDGE",
+      "doc_number": "TEST-2024-001",
+      "doc_date": "2024-11-24",
+      "receipt_number": "TEST-RCV-001",
+      "receipt_date": "2024-11-24",
+      "sender_name": "Test Consignee",
+      "item_code": "TEST-001",
+      "item_name": "Test Item",
+      "qty": 10,
+      "unit": "PCS",
+      "value_amount": 100000,
+      "value_currency": "IDR",
+      "movement_type": "IN",
+      "source": "BRIDGE",
+      "location": "",
+      "area": "",
+      "lot": "",
+      "rack": "",
+      "wip_stage": null,
+      "note": "Test movement from Phase 2 verification",
+      "createdAt": "2025-11-24T10:37:11.168Z",
+      "updatedAt": "2025-11-24T10:37:11.168Z"
+    }
+  ],
+  "items": [
+    {
+      "id": "17fc2722-fdee-40bb-97c9-9a01bdf3de65",
+      "item_code": "ITEM-001",
+      "item_name": "Sample Item",
+      "unit": "PCS",
+      "createdAt": "2025-11-24T10:37:23.016Z",
+      "updatedAt": "2025-11-24T10:37:23.016Z"
+    },
+    {
+      "id": "2c37352f-d1a8-47cc-9034-6bb56f5af3b7",
+      "item_code": "ITEM-002",
+      "item_name": "Another Item",
+      "unit": "KG",
+      "createdAt": "2025-11-24T10:37:28.036Z",
+      "updatedAt": "2025-11-24T10:37:28.036Z"
+    }
   ]
 }
