@@ -2,24 +2,25 @@ const API_BASE = 'http://localhost:4000/api';
 
 export async function fetchInbound(filters = {}) {
   const qs = new URLSearchParams();
+  qs.set('type', 'IN'); // Filter for inbound movements
   if (filters.startDate) qs.set('start', filters.startDate);
   if (filters.endDate) qs.set('end', filters.endDate);
-  if (filters.docType) qs.set('docType', filters.docType);
   if (filters.item) qs.set('item', filters.item);
-  const url = `${API_BASE}/kepabeanan/reports/inbound?${qs.toString()}`;
+  const url = `${API_BASE}/inventory/movements?${qs.toString()}`;
   const res = await fetch(url);
-  if (!res.ok) throw new Error('Fetch failed');
+  if (!res.ok) throw new Error('Fetch inbound failed');
   return res.json();
 }
 
 export async function fetchOutbound(filters = {}) {
   const qs = new URLSearchParams();
+  qs.set('type', 'OUT'); // Filter for outbound movements
   if (filters.startDate) qs.set('start', filters.startDate);
   if (filters.endDate) qs.set('end', filters.endDate);
   if (filters.item) qs.set('item', filters.item);
-  const url = `${API_BASE}/kepabeanan/reports/outbound?${qs.toString()}`;
+  const url = `${API_BASE}/inventory/movements?${qs.toString()}`;
   const res = await fetch(url);
-  if (!res.ok) throw new Error('Fetch failed');
+  if (!res.ok) throw new Error('Fetch outbound failed');
   return res.json();
 }
 
@@ -50,6 +51,18 @@ export async function fetchInventoryMovements(filters = {}) {
   if (filters.type) qs.set('type', filters.type);
   const res = await fetch(`${API_BASE}/inventory/movements?${qs.toString()}`);
   if (!res.ok) throw new Error('Fetch inventory movements failed');
+  return res.json();
+}
+
+export async function fetchLocations() {
+  const res = await fetch(`${API_BASE}/inventory/locations`);
+  if (!res.ok) throw new Error('Fetch locations failed');
+  return res.json();
+}
+
+export async function createLocation(payload) {
+  const res = await fetch(`${API_BASE}/inventory/locations`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+  if (!res.ok) throw new Error('Create location failed');
   return res.json();
 }
 

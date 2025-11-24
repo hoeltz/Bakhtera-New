@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { initializeSampleData } from './services/localStorage';
 
 // Error Boundary Component
@@ -160,7 +160,6 @@ import MutasiProdukReport from './components/kepabeanan/MutasiProdukReport';
 import MutasiAssetReport from './components/kepabeanan/MutasiAssetReport';
 import RejectReport from './components/kepabeanan/RejectReport';
 import WarehouseManagement from './components/WarehouseManagement';
-import InventoryManagement from './components/InventoryManagement';
 import SalesOrderManagement from './components/SalesOrderManagement';
 import SalesOrderManagementApproval from './components/SalesOrderManagement-Approval';
 
@@ -175,8 +174,8 @@ const menuItems = [
   // BRiDGE - Warehouse Management Suite (FREIGHT FORWARDING CORE MODULE)
   { text: 'BridGe - Warehouse Management', icon: <InventoryIcon />, path: '/bridge', category: 'bridge', isParent: true },
   { text: 'Customer Management', icon: <PeopleIcon />, path: '/bridge/customer', category: 'bridge' },
-  { text: 'Warehouse Management', icon: <InventoryIcon />, path: '/bridge/warehouse', category: 'bridge' },
-  { text: 'Inventory Management', icon: <CategoryIcon />, path: '/bridge/inventory', category: 'bridge' },
+  // Unified Inventory/Warehouse entry -> single source of navigation
+  { text: 'Inventory Management', icon: <InventoryIcon />, path: '/bridge/inventory', category: 'bridge' },
   { text: 'Quotation Management', icon: <MoneyIcon />, path: '/bridge/quotation', category: 'bridge' },
   { text: 'Sales Order Management', icon: <AssignmentIcon />, path: '/bridge/enhanced-sales-order', category: 'bridge' },
   { text: 'Accounting Ledger', icon: <AccountBalanceIcon />, path: '/bridge/accounting', category: 'bridge' },
@@ -517,8 +516,9 @@ function App() {
            {/* BRiDGE Module Routes */}
            <Route path="/bridge" element={<BRidgeDashboard />} />
            <Route path="/bridge/customer" element={<BRidgeCustomerManagement />} />
-           <Route path="/bridge/warehouse" element={<WarehouseManagement />} />
-           <Route path="/bridge/inventory" element={<InventoryManagement />} />
+           {/* Redirect old warehouse path to unified inventory management */}
+           <Route path="/bridge/warehouse" element={<Navigate to="/bridge/inventory" replace />} />
+           <Route path="/bridge/inventory" element={<BRidgeInventoryManagement />} />
            <Route path="/bridge/quotation" element={<BRidgeQuotationEvent />} />
            <Route path="/bridge/quotation-approval" element={<QuotationApproval />} />
            <Route path="/bridge/sales-order" element={<SalesOrderManagementApproval />} />

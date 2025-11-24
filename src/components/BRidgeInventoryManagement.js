@@ -24,6 +24,8 @@ import {
   Select,
   MenuItem,
   Grid,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -37,6 +39,7 @@ import notificationService from '../services/notificationService';
 import BridgeHeader from './BridgeHeader';
 import BridgeStatCard from './BridgeStatCard';
 import { fetchItems, createItem, createMovement, fetchInventoryMovements } from '../services/kepabeananService';
+import WarehouseManagement from './WarehouseManagement';
 
 const BC_TYPES = [
   'BC 2.5',
@@ -89,6 +92,11 @@ const BridgeInventoryManagement = ({ onNotification }) => {
   });
 
   const [itemsList, setItemsList] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
 
   const createSampleInventory = () => [
     {
@@ -463,6 +471,14 @@ const BridgeInventoryManagement = ({ onNotification }) => {
           </Box>
         )}
       />
+
+      <Tabs value={activeTab} onChange={handleTabChange} sx={{ mb: 2 }}>
+        <Tab label="Inventory" />
+        <Tab label="Warehouse" />
+      </Tabs>
+
+      {activeTab === 0 && (
+        <>
 
       <Grid container spacing={1.5} sx={{ mb: 3 }}>
         <Grid item xs={12} sm={6} md={2.4} lg={2.4} xl={2.4}>
@@ -871,6 +887,11 @@ const BridgeInventoryManagement = ({ onNotification }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      </>
+      )}
+
+      {activeTab === 1 && <WarehouseManagement />}
+
     </Box>
   );
 };

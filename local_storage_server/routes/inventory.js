@@ -321,6 +321,36 @@ router.get('/inventory/items', (req, res) => {
   res.json({ ok: true, items });
 });
 
+// GET /api/inventory/locations - Get saved warehouse locations (countries & cities)
+router.get('/inventory/locations', (req, res) => {
+  const store = db.getData();
+  store.locations = store.locations || { countries: [], cities: [] };
+  res.json({ ok: true, locations: store.locations });
+});
+
+// POST /api/inventory/locations - Add a saved location entry { type: 'country'|'city', value, label }
+router.post('/inventory/locations', (req, res) => {
+  const { type, value, label } = req.body || {};
+  if (!type || !value) return res.status(400).json({ ok: false, message: 'type and value required' });
+
+  const store = db.getData();
+  store.locations = store.locations || { countries: [], cities: [] };
+  const now = new Date().toISOString();
+
+  if (type === 'country') {
+    if (!store.locations.countries.find(c => c.value === value)) {
+      store.locations.countries.push({ value, label: label || value, createdAt: now });
+    }
+  } else {
+    if (!store.locations.cities.find(c => c.value === value)) {
+      store.locations.cities.push({ value, label: label || value, createdAt: now });
+    }
+  }
+
+  db.saveData(store);
+  res.json({ ok: true, locations: store.locations });
+});
+
 // POST /api/inventory/movements - Create movement with warehouse fields
 // body: { doc_type, doc_number, doc_date, receipt_number, receipt_date, sender_name, item_code, item_name, qty, unit, movement_type, location, area, lot, rack, wip_stage, note, source }
 router.post('/inventory/movements', (req, res) => {

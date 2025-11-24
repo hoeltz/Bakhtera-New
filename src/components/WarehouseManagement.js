@@ -88,6 +88,9 @@ const COUNTRIES = [
 // Local storage key for user-added locations
 const LOCATIONS_KEY = 'warehouseLocations';
 
+// Sync locations with server when available. We still keep localStorage as fallback.
+import { fetchLocations, createLocation } from '../services/kepabeananService';
+
 const loadSavedLocations = () => {
   try {
     const raw = localStorage.getItem(LOCATIONS_KEY);
@@ -106,7 +109,6 @@ const saveLocationToStore = (type, option) => {
   // option should be { value, label }
   const data = loadSavedLocations();
   if (type === 'country') {
-    // avoid duplicates
     if (!data.countries.find(c => c.value === option.value)) {
       data.countries.push(option);
     }
@@ -115,7 +117,17 @@ const saveLocationToStore = (type, option) => {
       data.cities.push(option);
     }
   }
-  localStorage.setItem(LOCATIONS_KEY, JSON.stringify(data));
+  // persist locally
+  try { localStorage.setItem(LOCATIONS_KEY, JSON.stringify(data)); } catch (e) { /* ignore */ }
+
+  // also persist to server (best-effort)
+  (async () => {
+    try {
+      await createLocation({ type: type === 'country' ? 'country' : 'city', value: option.value, label: option.label });
+    } catch (e) {
+      console.warn('Failed to persist location to server', e);
+    }
+  })();
 };
 
 // Get location options based on BC type

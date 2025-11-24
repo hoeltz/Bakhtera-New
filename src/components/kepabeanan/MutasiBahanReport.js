@@ -44,7 +44,7 @@ export default function MutasiBahanReport() {
     setLoading(true);
     setError('');
     try {
-      const resp = await fetchMutasiAggregation(filters);
+      const resp = await fetchMutasiAggregation('bahan', filters);
       setRows(resp.rows || []);
       setSummary(resp.summary || null);
     } catch (e) {
