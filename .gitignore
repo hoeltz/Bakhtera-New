@@ -78,6 +78,11 @@ jspm_packages/
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
 # OS generated files
 .DS_Store
 .DS_Store?

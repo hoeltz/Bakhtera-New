@@ -37,7 +37,7 @@ export async function fetchItems() {
 }
 
 export async function createMovement(payload) {
-  const url = `${API_BASE}/inventory/movements`;
+  const url = `${API_BASE}/kepabeanan/movements`;
   const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
   if (!res.ok) throw new Error('Create movement failed');
   return res.json();
