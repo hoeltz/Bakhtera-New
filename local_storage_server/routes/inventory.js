@@ -518,7 +518,11 @@ router.get('/inventory/aggregations/mutasi', (req, res) => {
   if (type) {
     store.items = store.items || [];
     const allowed = new Set(store.items.filter(i => (i.item_group || '').toLowerCase() === String(type).toLowerCase()).map(i => i.item_code));
-    movements = movements.filter(m => allowed.has(m.item_code));
+    // If we found matching item codes for the requested type, filter movements.
+    // Otherwise, skip type filtering to preserve backward compatibility when item_group metadata is missing.
+    if (allowed.size > 0) {
+      movements = movements.filter(m => allowed.has(m.item_code));
+    }
   }
 
   // Aggregate by item_code
