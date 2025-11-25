@@ -123,7 +123,6 @@ import CustomerManagement from './components/CustomerManagement';
 import BRidgeVendorManagement from './components/BRidgeVendorManagement';
 import Quotation, { OperationalCost } from './components/Quotation';
 import ShippingManagement from './components/ShippingManagement';
-import VendorManagement from './components/VendorManagement';
 import PurchaseOrder from './components/PurchaseOrder';
 import InvoiceManagement from './components/InvoiceManagement';
 import FinanceReporting from './components/FinanceReporting';
