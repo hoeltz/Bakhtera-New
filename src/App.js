@@ -211,7 +211,7 @@ function App() {
     <Box>
       <Toolbar>
         <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold' }}>
-          Bakhtera 1
+          Bakhtera New
         </Typography>
       </Toolbar>
       <Divider />
@@ -272,7 +272,7 @@ function App() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Bakhtera 1 - Freight Forwarding Management System
+            Bakhtera New - Freight Forwarding Management System
           </Typography>
         </Toolbar>
       </AppBar>

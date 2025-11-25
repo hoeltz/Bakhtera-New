@@ -1,4 +1,4 @@
-# B1 - Advanced Freight Forwarding Management System
+# Bakhtera New - Advanced Freight Forwarding Management System
 
 🚀 **Production Ready for Vercel Deployment**
 
@@ -16,7 +16,7 @@ A comprehensive freight forwarding management system built with React, Material-
    - Go to [Vercel Dashboard](https://vercel.com/dashboard)
    - Click "Add New" → "Project"
    - Import from GitHub
-   - Select your repository: `hoeltz/b1new`
+   - Select your repository: `hoeltz/bakhtera-new`
 
 2. **Configure Project**
    - **Framework Preset**: Create React App

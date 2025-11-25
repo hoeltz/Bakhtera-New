@@ -1,8 +1,8 @@
 {
-  "name": "bakhtera1",
+  "name": "bakhtera-new",
   "version": "1.0.0",
-  "description": "Bakhtera1 - Advanced Freight Forwarding Management System",
-  "homepage": "https://bakhtera-one.vercel.app",
+  "description": "Bakhtera New - Advanced Freight Forwarding Management System",
+  "homepage": "https://bakhtera-new.vercel.app",
   "main": "src/index.js",
   "scripts": {
     "start": "react-scripts start",

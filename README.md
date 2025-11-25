@@ -1,4 +1,4 @@
-# 🚛 Bakhtera1 - Advanced Freight Forwarding Management System
+# 🚛 Bakhtera New - Advanced Freight Forwarding Management System
 
 A comprehensive freight forwarding management system built with React.js and Material-UI, designed for Indonesian logistics companies.
 
@@ -73,8 +73,8 @@ A comprehensive freight forwarding management system built with React.js and Mat
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/bakhtera-one.git
-   cd bakhtera-one
+   git clone https://github.com/your-username/bakhtera-new.git
+   cd bakhtera-new
    ```
 
 2. **Install dependencies**
@@ -124,7 +124,7 @@ A comprehensive freight forwarding management system built with React.js and Mat
 ## 📁 Project Structure
 
 ```
-bakhtera-one/
+bakhtera-new/
 ├── public/
 │   └── index.html              # Main HTML template
 ├── src/
