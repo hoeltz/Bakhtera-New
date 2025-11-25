@@ -120,6 +120,7 @@ import {
 // Components
 import Dashboard from './components/Dashboard';
 import CustomerManagement from './components/CustomerManagement';
+import BRidgeVendorManagement from './components/BRidgeVendorManagement';
 import Quotation, { OperationalCost } from './components/Quotation';
 import ShippingManagement from './components/ShippingManagement';
 import VendorManagement from './components/VendorManagement';
@@ -324,7 +325,7 @@ function App() {
           <Route path="/shipping" element={<ShippingManagement />} />
           <Route path="/warehouse" element={<WarehouseManagement />} />
           <Route path="/courier" element={<CourierManagement />} />
-          <Route path="/vendors" element={<VendorManagement />} />
+          <Route path="/vendors" element={<BRidgeVendorManagement />} />
           <Route path="/invoices" element={<InvoiceManagement />} />
           <Route path="/profit-loss" element={<ProfitLossReport />} />
           <Route path="/balance-sheet" element={<BalanceSheetReport />} />
